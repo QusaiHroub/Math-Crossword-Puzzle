@@ -24,6 +24,11 @@
 using namespace std;
 
 Game::Game(){}
+
+Game::~Game(){
+    m_GridBuilder.freeMem(m_adjMatrix);
+}
+
 void Game::setWidth (int width) {
     if (width < 6) {
         width = 6;
