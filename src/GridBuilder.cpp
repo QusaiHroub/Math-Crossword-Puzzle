@@ -61,6 +61,7 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > &adjMatrix, vect
         creatPuzzle(height, width, startY, startX, isV);
     }
     adjMatrix = *m_adjMatrix;
+    adjList = *m_adjList;
 }
 
  void GridBuilder::creatPuzzle (int height, int width, int startY, int startX, bool isV) {
