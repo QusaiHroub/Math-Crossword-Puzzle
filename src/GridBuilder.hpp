@@ -31,12 +31,13 @@ private:
                          {1, 2},
                          {0, 2} };
     bool cheak (int y, int x, bool isV, bool isMid, bool dir);
-    void freeMem(vector < vector < CoreCell *> > *adjM);
+
 public:
     GridBuilder();
     void init (int height, int width);
-    void creatAdjMatrix(vector< vector < CoreCell *> > &adjMatrix, vector< vector < node > > &adjList,
+    void creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < node > > **adjList,
                         int height, int width, int startY, int startX, bool isV, int per);
     void creatPuzzle (int height, int width, int startY, int startX, bool isV);
+    void freeMem(vector < vector < CoreCell *> > *adjM);
 
 };

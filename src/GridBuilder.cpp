@@ -48,20 +48,19 @@ void GridBuilder::init (int height, int width) {
     }
 }
 
-void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > &adjMatrix, vector< vector < node > > &adjList,
+void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < node > > **adjList,
                                  int height, int width, int startY, int startX, bool isV, int per) {
 
-    adjList = vector< vector < node > >();
     srand (time(NULL));
-    int maxC = (int)((height * width / 5) * (per / 10.0));
+    int maxC = (int)((height * width / 5) * (per / 11.0));
     m_adjList = new vector< vector < node > >();
     while (m_adjList->size() < maxC) {
         delete m_adjList;
         m_adjList = new vector< vector < node > >();
         creatPuzzle(height, width, startY, startX, isV);
     }
-    adjMatrix = *m_adjMatrix;
-    adjList = *m_adjList;
+    *adjMatrix = m_adjMatrix;
+    *adjList = m_adjList;
 }
 
  void GridBuilder::creatPuzzle (int height, int width, int startY, int startX, bool isV) {

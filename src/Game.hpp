@@ -27,22 +27,25 @@ using namespace Cell;
 
 class Game {
 private:
-    vector < vector < CoreCell *> > m_adjMatrix;
-    vector < vector < node > > m_adjList;
+    vector < vector < CoreCell *> > *m_adjMatrix;
+    vector < vector < node > > *m_adjList;
     const char m_oList[4] = {'+', '×', '-', '÷'};
     int m_at[3] = {0, 2, 4};
     int m_height, m_width, m_max = 9, m_per;
     GridBuilder m_GridBuilder;
     int detPer(int n, int m);
+    void printList();
+    void printGame();
+    vector < string > __toString();
 
 public:
     Game(int height, int width, int per);
     Game();
     void init (int height, int width, int per);
     void newGame (int startY, int startX, int height, int width, bool isVerticale);
-    vector < string > __toString();
     void setWidth (int width);
     void setHeight (int height);
     int getWidth ();
     int getHeight ();
+    void playGame ();
 };
