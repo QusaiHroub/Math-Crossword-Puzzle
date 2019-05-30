@@ -12,7 +12,7 @@
 *
 * This program is dislineibuted in the hope it will be useful, but WITHOUT ANY
 * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 * more details.
 */
 
@@ -70,6 +70,9 @@ void Game::newGame (int startY, int startX, int height, int width, bool isVertic
     int per = detPer(height, width);
     init(height, width, per);
     m_GridBuilder.creatAdjMatrix(&m_adjMatrix, &m_adjList, m_height, m_width, startY, startX, isVerticale, per);
+    m_EquationGenerator.setHeight(m_height);
+    m_EquationGenerator.setWidth(m_width);
+    m_EquationGenerator.generateEquation(startY, startX, m_adjMatrix);
 }
 
 vector < string >  Game::__toString() {

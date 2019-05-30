@@ -12,7 +12,7 @@
 *
 * This program is distributed in the hope it will be useful, but WITHOUT ANY
 * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 * more details.
 */
 
@@ -21,6 +21,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "GridBuilder.hpp"
+#include "EquationGenerator.hpp"
 
 using namespace std;
 using namespace Cell;
@@ -29,10 +30,10 @@ class Game {
 private:
     vector < vector < CoreCell *> > *m_adjMatrix;
     vector < vector < node > > *m_adjList;
-    const char m_oList[4] = {'+', '×', '-', '÷'};
     int m_at[3] = {0, 2, 4};
     int m_height, m_width, m_max = 9, m_per;
     GridBuilder m_GridBuilder;
+    EquationGenerator m_EquationGenerator;
     int detPer(int n, int m);
     void printList();
     void printGame();

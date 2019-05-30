@@ -12,9 +12,12 @@
 *
 * This program is distributed in the hope it will be useful, but WITHOUT ANY
 * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 * more details.
 */
+
+#ifndef CELL
+#define CELL
 
 #include <string>
 
@@ -82,3 +85,4 @@ public:
 };
 
 }
+#endif
