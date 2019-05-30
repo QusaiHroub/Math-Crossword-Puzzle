@@ -50,7 +50,7 @@ void init () {
         if (startX < 0)
             startX = 0;
     }
-    game->newGame(startX, startX, height, width, isVerticale);
+    game->newGame(startaY, startX, height, width, isVerticale);
     game->playGame();
 }
 
