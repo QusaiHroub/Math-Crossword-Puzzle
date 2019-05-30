@@ -29,7 +29,7 @@ class Game {
 private:
     vector < vector < CoreCell *> > *m_adjMatrix;
     vector < vector < node > > *m_adjList;
-    const char m_oList[4] = {'+', '×', '-', '÷'};
+    const char m_oList[4] = {'+', 'Ã—', '-', 'Ã·'};
     int m_at[3] = {0, 2, 4};
     int m_height, m_width, m_max = 9, m_per;
     GridBuilder m_GridBuilder;
@@ -41,6 +41,7 @@ private:
 public:
     Game(int height, int width, int per);
     Game();
+    ~Game();
     void init (int height, int width, int per);
     void newGame (int startY, int startX, int height, int width, bool isVerticale);
     void setWidth (int width);
