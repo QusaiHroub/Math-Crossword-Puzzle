@@ -30,13 +30,13 @@ private:
     int l2List[3][2] = { {0, 1},
                          {1, 2},
                          {0, 2} };
-    bool cheak (int i, int j, bool isV, bool isMid, bool dir);
+    bool cheak (int y, int x, bool isV, bool isMid, bool dir);
     void freeMem(vector < vector < CoreCell *> > *adjM);
 public:
     GridBuilder();
-    void init (int n, int m);
+    void init (int height, int width);
     void creatAdjMatrix(vector< vector < CoreCell *> > &adjMatrix, vector< vector < node > > &adjList,
-                        int n, int m, int i, int j, bool isV, int __per);
-    void creatPuzzle (int n, int m, int i, int j, bool isV);
+                        int height, int width, int startY, int startX, bool isV, int per);
+    void creatPuzzle (int height, int width, int startY, int startX, bool isV);
 
 };
