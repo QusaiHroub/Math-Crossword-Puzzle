@@ -120,6 +120,7 @@ void EquationGenerator::DFS (const int y, const int x, bool isV) {
         nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x + 2]);
         eNumber[1] = stoi(nCell->getValue());
         nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x + 4]);
+        eNumber[2] = stoi(nCell->getValue());
         // bug when all value in eNumber equals to 0
         int numberOfNonZero = 0;
         for (int v = 0 ; v < 3; v++) {
@@ -244,7 +245,7 @@ string EquationGenerator::detOpr (int eNumber[], int numberOfNonZero) {
                     }
                     return "-";
                 } else  if (eNumber[0] / eNumber[1] == eNumber[2]) {
-                    return "÷";
+                    return "Ã·";
                 } else {
                     // bug
                     return " ";
@@ -260,7 +261,7 @@ string EquationGenerator::detOpr (int eNumber[], int numberOfNonZero) {
                         return "+";
                     }
                 } else if (eNumber[0] * eNumber[1] == eNumber[2]) {
-                    return "×";
+                    return "Ã—";
                 } else {
                     // bug ...
                     return " ";
@@ -277,7 +278,7 @@ int otoi(string o) {
     if (o == "+") {
         return 1;
     }
-    if (o == "×") {
+    if (o == "Ã—") {
         return 2;
     }
     return 3;
