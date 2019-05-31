@@ -26,7 +26,8 @@ using namespace std;
 Game::Game(){}
 
 Game::~Game(){
-    m_GridBuilder.freeMem(&m_adjMatrix);
+    m_GridBuilder.freeMem(m_adjMatrix);
+    delete m_adjMatrix;
     delete m_adjList;
 }
 
@@ -49,26 +50,28 @@ int Game::getHeight () {
     return m_height;
 }
 
-void Game::init (int height, int width, int per) {
+void Game::init (int height, int width, double per) {
     setWidth(width);
     setHeight(height);
     m_per = per;
 }
 
-int Game::detPer(int height, int width){
+double Game::detPer(int height, int width){
     int x = height * width;
     if (x < 100) {
         return 6;
     } else if (x <= 1225) {
-        return 5;
+        return 5.5;
     } else if (x <= 5625) {
-        return 4;
+        return 4.5;
+    } else if (x <= 22500) {
+        return 3.6;
     }
-    return 3;
+    return 3.3;
 }
 
 void Game::newGame (int startY, int startX, int height, int width, bool isVerticale) {
-    int per = detPer(height, width);
+    double per = detPer(height, width);
     init(height, width, per);
     m_GridBuilder.creatAdjMatrix(&m_adjMatrix, &m_adjList, m_height, m_width, startY, startX, isVerticale, per);
     m_EquationGenerator.setHeight(m_height);
@@ -227,7 +230,7 @@ void Game::playGame () {
                 break;
             case 3:
                 isEnded = true;
-                m_GridBuilder.freeMem(&m_adjMatrix);
+                m_GridBuilder.freeMem(m_adjMatrix);
                 return;
         }
         if (!isEnded)

@@ -26,23 +26,22 @@ using namespace std;
 
 GridBuilder::GridBuilder() {}
 
-void GridBuilder::freeMem(vector < vector < CoreCell *> > **adjM) {
-    if (*adjM == nullptr) {
-        return;
-    }
-    for (int i = 0; i < (*(*adjM)).size(); i++) {
-        for (int j = 0; j < (*(*adjM))[i].size(); j++) {
-            delete (*(*adjM))[i][j];
+void GridBuilder::freeMem(vector < vector < CoreCell *> > *adjM) {
+    for (int i = 0; i < (*adjM).size(); i++) {
+        for (int j = 0; j < (*adjM)[i].size(); j++) {
+            delete (*adjM)[i][j];
+            (*adjM)[i][j] = nullptr;
         }
     }
-    delete (*adjM);
-    (*adjM) = nullptr;
 }
 
 
 void GridBuilder::init (int height, int width) {
-    freeMem(&m_adjMatrix);
-    m_adjMatrix = new  vector< vector < CoreCell *> >();
+    if (m_adjMatrix == nullptr) {
+        m_adjMatrix = new  vector< vector < CoreCell *> >();
+    } else {
+        freeMem(m_adjMatrix);
+    }
     m_adjMatrix->assign(height, vector<CoreCell * > (width));
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
@@ -52,10 +51,10 @@ void GridBuilder::init (int height, int width) {
 }
 
 void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < node > > **adjList,
-                                 int height, int width, int startY, int startX, bool isV, int per) {
+                                 int height, int width, int startY, int startX, bool isV, double per) {
 
     srand (time(NULL));
-    int maxC = (int)((height * width / 5) * (per / 11.0));
+    int maxC = (int)((height * width / 5) * (per / 10.0));
     m_adjList = new vector< vector < node > >();
     while (m_adjList->size() < maxC) {
         delete m_adjList;
@@ -137,6 +136,10 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                     n.isV = !head.isV;
                     n.isMid = rand() % 2;
                     n.dir = rand() % 2;
+                    lNode n2 = n;
+                    if (n2.isMid) {
+                        n2.isMid = 0;
+                    }
                     if(n.isMid && n.isV) {
                         n.y -= 2;
                         n.dir = true;
@@ -148,6 +151,9 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                         continue;
                     }
                     q.push(n);
+                    if (n.isMid != n2.isMid) {
+                        q.push(n2);
+                    }
                 }
                 break;
             case 1: case 5: case 7: case 8: case 10:
@@ -158,6 +164,10 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                     n.isV = !head.isV;
                     n.isMid = rand() % 2;
                     n.dir = rand() % 2;
+                    lNode n2 = n;
+                    if (n2.isMid) {
+                        n2.isMid = 0;
+                    }
                     if(n.isMid && n.isV) {
                         n.y -= 2;
                         n.dir = true;
@@ -169,6 +179,9 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                         continue;
                     }
                     q.push(n);
+                    if (n.isMid != n2.isMid) {
+                        q.push(n2);
+                    }
                 }
                 break;
             default:
@@ -178,6 +191,10 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                 n.isV = !head.isV;
                 n.isMid = rand() % 2;
                 n.dir = rand() % 2;
+                lNode n2 = n;
+                if (n2.isMid) {
+                    n2.isMid = 0;
+                }
                 if(n.isMid && n.isV) {
                     n.y -= 2;
                     n.dir = true;
@@ -189,6 +206,9 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                     continue;
                 }
                 q.push(n);
+                if (n.isMid != n2.isMid) {
+                    q.push(n2);
+                }
                 break;
         }
     }

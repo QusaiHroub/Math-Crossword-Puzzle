@@ -31,10 +31,11 @@ private:
     vector < vector < CoreCell *> > *m_adjMatrix;
     vector < vector < node > > *m_adjList;
     int m_at[3] = {0, 2, 4};
-    int m_height, m_width, m_cellLength = 9, m_per;
+    int m_height, m_width, m_cellLength = 9;
+    double m_per;
     GridBuilder m_GridBuilder;
     EquationGenerator m_EquationGenerator;
-    int detPer(int n, int m);
+    double detPer(int n, int m);
     void printList();
     void printGame();
     vector < string > __toString();
@@ -43,7 +44,7 @@ public:
     Game(int height, int width, int per);
     Game();
     ~Game();
-    void init (int height, int width, int per);
+    void init (int height, int width, double per);
     void newGame (int startY, int startX, int height, int width, bool isVerticale);
     void setWidth (int width);
     void setHeight (int height);

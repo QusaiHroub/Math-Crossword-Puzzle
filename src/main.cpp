@@ -26,7 +26,7 @@
 
 using namespace std;
 
-Game *game;
+Game *game = nullptr;
 bool isVerticale;
 int height = 20, width = 20;
 
@@ -37,7 +37,9 @@ void printList() {
 }
 
 void init () {
-    game = new Game();
+    if (game == nullptr) {
+        game = new Game();
+    }
     srand(time(NULL));
     int startY = 0, startX = 0;
     isVerticale = rand() % 2;
@@ -59,7 +61,7 @@ int main() {
     while (printList(), cin >> yourChoice) {
         switch(yourChoice) {
             case 1:
-                cout << "Enter grid size (h , w), max (100, 100), min (6, 6) : ";
+                cout << "Enter grid size (h , w), max (200, 200), min (6, 6) : ";
                 cin >> height >> width;
                 if (height < 6) {
                     height = 6;
@@ -67,11 +69,11 @@ int main() {
                 if (width < 6) {
                     width = 6;
                 }
-                if (height > 100) {
-                    height = 100;
+                if (height > 200) {
+                    height = 200;
                 }
-                if (width > 100) {
-                    width = 100;
+                if (width > 200) {
+                    width = 200;
                 }
                 init();
                 break;

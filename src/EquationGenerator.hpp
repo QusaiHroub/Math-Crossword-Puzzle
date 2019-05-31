@@ -28,7 +28,7 @@ private:
     int m_width, m_height, m_startY, m_startX, m_maxNumberLength = 7;
     vector < vector < CoreCell * > > *m_adjMatrix;
     vector < vector < bool > > m_visited;
-    const string m_oList[4] = {"+", "Ã—", "-", "Ã·"};
+    const string m_oList[4] = {"+", "×", "-", "÷"};
     int x_d[4] = {0,1,-1,0};
     int y_d[4] = {1,0,0,-1};
     int nextCell[3] = {0, 2 , 4};

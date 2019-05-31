@@ -279,7 +279,7 @@ string EquationGenerator::detOpr (int **eNumber, int numberOfNONnull) {
                         }
                         return "+";
                     } else {
-                        if (*eNumber[0] % *eNumber[2] == 0) {
+                        if (*eNumber[2] > 0 && *eNumber[0] % *eNumber[2] == 0) {
                             return m_oList[(rand() % 2) + 2];
                         }
                         return "-";
@@ -305,11 +305,11 @@ string EquationGenerator::detOpr (int **eNumber, int numberOfNONnull) {
             switch (maxI) {
                 case 0:
                     if (*eNumber[0] - *eNumber[1] == *eNumber[2]) {
-                        if (*eNumber[0] / *eNumber[1] == *eNumber[2]) {
+                        if (*eNumber[1] > 0 && *eNumber[0] / *eNumber[1] == *eNumber[2]) {
                             return m_oList[(rand() % 2) + 2];
                         }
                         return "-";
-                    } else  if (*eNumber[0] / *eNumber[1] == *eNumber[2]) {
+                    } else  if (*eNumber[1] > 0 && *eNumber[0] / *eNumber[1] == *eNumber[2]) {
                         return "÷";
                     } else {
                         // bug

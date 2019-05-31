@@ -25,7 +25,7 @@ using namespace Cell;
 
 class GridBuilder {
 private:
-    vector< vector < CoreCell *> > *m_adjMatrix = new  vector< vector < CoreCell *> >();
+    vector< vector < CoreCell *> > *m_adjMatrix = nullptr;
     vector< vector < node > > *m_adjList = nullptr;
     int l2List[3][2] = { {0, 1},
                          {1, 2},
@@ -36,8 +36,8 @@ public:
     GridBuilder();
     void init (int height, int width);
     void creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < node > > **adjList,
-                        int height, int width, int startY, int startX, bool isV, int per);
+                        int height, int width, int startY, int startX, bool isV, double per);
     void creatPuzzle (int height, int width, int startY, int startX, bool isV);
-    void freeMem(vector < vector < CoreCell *> > **adjM);
+    void freeMem(vector < vector < CoreCell *> > *adjM);
 
 };
