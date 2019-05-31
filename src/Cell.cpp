@@ -102,7 +102,7 @@ string NumericCell::toString () {
             str += " ";
         }
     } else {
-        int n = getLength() - getValue().length();
+        int n = getLength() - getGValue().length();
         int m = n / 2;
         str.assign(m, ' ');
         str+= m_gValue;
