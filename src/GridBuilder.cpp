@@ -101,8 +101,8 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
         m_adjList->push_back(vector <int>());
         node nNode;
         nNode.isVerticale = head.isV;
-        nNode.x = head.x;
-        nNode.y = head.y;
+        nNode.x = head.x - (!head.isV) * (!head.dir) * 4;
+        nNode.y = head.y - head.isV * (!head.dir) * 4;
         m_nodeList->push_back(nNode);
         if (head.isV) {
             int newY = head.y;
