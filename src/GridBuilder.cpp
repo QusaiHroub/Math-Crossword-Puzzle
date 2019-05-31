@@ -94,7 +94,7 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                     (*m_adjMatrix)[k][head.x] = new OperatorCell("=" , false);
                 } else {
                     delete (*m_adjMatrix)[k][head.x];
-                    (*m_adjMatrix)[k][head.x] = new NumericCell("0");
+                    (*m_adjMatrix)[k][head.x] = new NumericCell("");
                     head.list[head.ctr] = k;
                     head.ctr++;
                 }
@@ -113,7 +113,7 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                     (*m_adjMatrix)[head.y][k] = new OperatorCell("=" , false);
                 } else {
                     delete (*m_adjMatrix)[head.y][k];
-                    (*m_adjMatrix)[head.y][k] = new NumericCell("0");
+                    (*m_adjMatrix)[head.y][k] = new NumericCell("");
                     head.list[head.ctr] = k;
                     head.ctr++;
                 }

@@ -48,6 +48,15 @@ void EquationGenerator::setWidth(int width) {
     m_width = width;
 }
 
+int EquationGenerator::getCellLenght () {
+    return m_maxNumberLength + 2;
+}
+void EquationGenerator::setMaxNumberLength(int newLength) {
+    if (newLength > m_maxNumberLength) {
+        m_maxNumberLength = newLength;
+    }
+}
+
 
 void EquationGenerator::generateEquation (int startY, int startX, vector < vector < CoreCell * > > *adjMatrix) {
     m_startY = startY;
@@ -65,6 +74,7 @@ void EquationGenerator::generateEquation (){
     m_visited.assign(m_height, vector < bool >(m_width, 0));
     NumericCell *nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[m_startY][m_startX]);
     nCell->setValue(to_string((rand() % 89) + 10));
+    setMaxNumberLength(nCell->getValue().size());
     nCell->setState(false);
     for (int k = 0; k < 4; k++) {
         int newX, newY;
@@ -82,7 +92,10 @@ void EquationGenerator::generateEquation (){
 }
 
 void EquationGenerator::DFS (const int y, const int x, bool isV) {
-    int eNumber[3];
+    int **eNumber = new int*[3];
+    for (int i = 0; i < 3; i ++) {
+        (eNumber[i]) = nullptr;
+    }
     NumericCell *nCell;
     OperatorCell *oCell;
     if (isV) {
@@ -91,22 +104,40 @@ void EquationGenerator::DFS (const int y, const int x, bool isV) {
         }
         m_visited[y + 1][x] = true;
         nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x]);
-        eNumber[0] = stoi(nCell->getValue());
+        if (nCell->getValue() == "") {
+            delete eNumber[0];
+            eNumber[0] = nullptr;
+        } else {
+            delete eNumber[0];
+            eNumber[0] = new int(stoi(nCell->getValue()));
+        }
         nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y + 2][x]);
-        eNumber[1] = stoi(nCell->getValue());
+        if (nCell->getValue() == "") {
+            delete eNumber[1];
+            eNumber[1] = nullptr;
+        } else {
+            delete eNumber[1];
+            eNumber[1] = new int (stoi(nCell->getValue()));
+        }
         nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y + 4][x]);
-        eNumber[2] = stoi(nCell->getValue());
+        if (nCell->getValue() == "") {
+            delete eNumber[2];
+            eNumber[2] = nullptr;
+        } else {
+            delete eNumber[2];
+            eNumber[2] = new int(stoi(nCell->getValue()));
+        }
         // bug when all value in eNumber equals to 0
-        int numberOfNonZero = 0;
+        int numberOfNONnull = 0;
         for (int v = 0 ; v < 3; v++) {
             if (eNumber[v] != 0) {
-                numberOfNonZero++;
+                numberOfNONnull++;
             }
         }
         oCell = dynamic_cast<OperatorCell *>((*m_adjMatrix)[y + 1][x]);
-        oCell->setValue(detOpr(eNumber, numberOfNonZero));
+        oCell->setValue(detOpr(eNumber, numberOfNONnull));
         oCell->setState(false);
-        detNum(eNumber, numberOfNonZero, oCell->getValue());
+        detNum(eNumber, numberOfNONnull, oCell->getValue());
         setMathEQ(y, x, eNumber, true);
         // TODO
 
@@ -116,26 +147,47 @@ void EquationGenerator::DFS (const int y, const int x, bool isV) {
         }
         m_visited[y][x + 1] = true;
         nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x]);
-        eNumber[0] = stoi(nCell->getValue());
+        if (nCell->getValue() == "") {
+            delete eNumber[0];
+            eNumber[0] = nullptr;
+        } else {
+            delete eNumber[0];
+            eNumber[0] = new int(stoi(nCell->getValue()));
+        }
         nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x + 2]);
-        eNumber[1] = stoi(nCell->getValue());
+        if (nCell->getValue() == "") {
+            delete eNumber[1];
+            eNumber[1] = nullptr;
+        } else {
+            delete eNumber[1];
+            eNumber[1] = new int (stoi(nCell->getValue()));
+        }
         nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x + 4]);
-        eNumber[2] = stoi(nCell->getValue());
+        if (nCell->getValue() == "") {
+            delete eNumber[2];
+            eNumber[2] = nullptr;
+        } else {
+            delete eNumber[2];
+            eNumber[2] = new int(stoi(nCell->getValue()));
+        }
         // bug when all value in eNumber equals to 0
-        int numberOfNonZero = 0;
+        int numberOfNONnull = 0;
         for (int v = 0 ; v < 3; v++) {
             if (eNumber[v] != 0) {
-                numberOfNonZero++;
+                numberOfNONnull++;
             }
         }
         oCell = dynamic_cast<OperatorCell *> ((*m_adjMatrix)[y][x + 1]);
-        oCell->setValue(detOpr(eNumber, numberOfNonZero));
+        oCell->setValue(detOpr(eNumber, numberOfNONnull));
         oCell->setState(false);
-        detNum(eNumber, numberOfNonZero, oCell->getValue());
+        detNum(eNumber, numberOfNONnull, oCell->getValue());
         setMathEQ(y,x, eNumber, false);
         // TODO
     }
-
+    for (int i = 0; i < 3; i ++) {
+        delete (eNumber[i]);
+    }
+    delete eNumber;
     int  newY, newX, a, b;
     for (int l = 0; l < 3; l++ ) {
         newY = y;
@@ -186,86 +238,101 @@ void EquationGenerator::DFS (const int y, const int x, bool isV) {
 }
 
 
-string EquationGenerator::detOpr (int eNumber[], int numberOfNonZero) {
-    int zI = 0;
-    if (numberOfNonZero == 2) {
-        for (int i = 1; i < 3; i++ ) {
-            if ( eNumber[i] == 0 ) {
-                zI = i;
+string EquationGenerator::detOpr (int **eNumber, int numberOfNONnull) {
+    int nullptrI = 0;
+    switch(numberOfNONnull) {
+        case 1: {
+            int oI = 0;
+            for (int i = 1; i< 3; i++) {
+                if (eNumber[i] != 0){
+                    oI = i;
+                }
             }
-        }
-        switch (zI) {
-            case 0:
-                int r;
-                if (eNumber[1] > 0 && eNumber[1] < eNumber[2]) {
-                    if (eNumber[2] % eNumber[1] == 0)
-                        r = rand() % 2;
-                    else
-                        r = 0;
-                } else if (eNumber[1] > 0 && eNumber[2] % eNumber[1] == 0){
-                    r = (rand() % 2) + 2;
-                } else {
-                    r = 2;
-                }
-                return m_oList[r];
-            case 1:
-                if (eNumber[0] < eNumber[2]) {
-                    if (eNumber[0] > 0 && eNumber[2] % eNumber[0] == 0) {
-                        return m_oList[rand() % 2];
-                    }
-                    return "+";
-                } else {
-                    if (eNumber[0] % eNumber[2] == 0) {
-                        return m_oList[(rand() % 2) + 2];
-                    }
-                    return "-";
-                }
-            default:
-                if (eNumber[0] > eNumber[1]) {
-                    if (eNumber[1] > 0 && rand() % 2 && eNumber[0] % eNumber[1] == 0) {
-                        return m_oList[rand() % 4];
-                    }
-                    return m_oList[rand() % 3];
-                } else {
-                    return m_oList[rand() % 2];
-                }
-        }
-    } else if (numberOfNonZero == 3) {
-        int maxI = 0;
-        for (int i = 1; i < 3; i++) {
-            if (eNumber[i] > eNumber[maxI]) {
-                maxI = i;
+            if (eNumber[oI] == 0 && oI != 3) {
+                return "+";
             }
-        }
-        switch (maxI) {
-            case 0:
-                if (eNumber[0] - eNumber[1] == eNumber[2]) {
-                    if (eNumber[0] / eNumber[1] == eNumber[2]) {
-                        return m_oList[(rand() % 2) + 2];
-                    }
-                    return "-";
-                } else  if (eNumber[0] / eNumber[1] == eNumber[2]) {
-                    return "Ã·";
-                } else {
-                    // bug
-                    return " ";
+            break;
+        } case 2: {
+            for (int i = 1; i < 3; i++ ) {
+                if ( eNumber[i] == 0 ) {
+                    nullptrI = i;
                 }
-            case 1:
-                // bug ...
-                return " ";
-            default:
-                if (eNumber[0] + eNumber[1] == eNumber[2]) {
-                    if (eNumber[0] * eNumber[1] == eNumber[2]) {
-                        return m_oList[rand() % 2];
+            }
+            switch (nullptrI) {
+                case 0:
+                    int r;
+                    if (*eNumber[1] > 0 && *eNumber[1] < *eNumber[2]) {
+                        if (*eNumber[2] % *eNumber[1] == 0)
+                            r = rand() % 2;
+                        else
+                            r = 0;
+                    } else if (*eNumber[1] > 0 && *eNumber[2] % *eNumber[1] == 0){
+                        r = (rand() % 2) + 2;
                     } else {
-                        return "+";
+                        r = 2;
                     }
-                } else if (eNumber[0] * eNumber[1] == eNumber[2]) {
-                    return "Ã—";
-                } else {
+                    return m_oList[r];
+                case 1:
+                    if (*eNumber[0] < *eNumber[2]) {
+                        if (*eNumber[0] > 0 && *eNumber[2] % *eNumber[0] == 0) {
+                            return m_oList[rand() % 2];
+                        }
+                        return "+";
+                    } else {
+                        if (*eNumber[0] % *eNumber[2] == 0) {
+                            return m_oList[(rand() % 2) + 2];
+                        }
+                        return "-";
+                    }
+                default:
+                    if (*eNumber[0] > *eNumber[1]) {
+                        if (*eNumber[1] > 0 && rand() % 2 && *eNumber[0] % *eNumber[1] == 0) {
+                            return m_oList[rand() % 4];
+                        }
+                        return m_oList[rand() % 3];
+                    } else {
+                        return m_oList[rand() % 2];
+                    }
+            }
+            break;
+        } case 3: {
+            int maxI = 0;
+            for (int i = 1; i < 3; i++) {
+                if (*eNumber[i] > *eNumber[maxI]) {
+                    maxI = i;
+                }
+            }
+            switch (maxI) {
+                case 0:
+                    if (*eNumber[0] - *eNumber[1] == *eNumber[2]) {
+                        if (*eNumber[0] / *eNumber[1] == *eNumber[2]) {
+                            return m_oList[(rand() % 2) + 2];
+                        }
+                        return "-";
+                    } else  if (*eNumber[0] / *eNumber[1] == *eNumber[2]) {
+                        return "÷";
+                    } else {
+                        // bug
+                        return " ";
+                    }
+                case 1:
                     // bug ...
                     return " ";
-                }
+                default:
+                    if (*eNumber[0] + *eNumber[1] == *eNumber[2]) {
+                        if (*eNumber[0] * *eNumber[1] == *eNumber[2]) {
+                            return m_oList[rand() % 2];
+                        } else {
+                            return "+";
+                        }
+                    } else if (*eNumber[0] * *eNumber[1] == *eNumber[2]) {
+                        return "×";
+                    } else {
+                        // bug ...
+                        return " ";
+                    }
+            }
+            break;
         }
     }
     return m_oList[rand() % 4];
@@ -278,21 +345,21 @@ int otoi(string o) {
     if (o == "+") {
         return 1;
     }
-    if (o == "Ã—") {
+    if (o == "×") {
         return 2;
     }
     return 3;
 }
 
-void EquationGenerator::detNum (int eNumber[], int n, string o) {
-    if (n == 3)
+void EquationGenerator::detNum (int **eNumber, int numberOfNONnull, string o) {
+    if (numberOfNONnull == 3)
         return;
     int r;
-    switch (n) {
+    switch (numberOfNONnull) {
         case 1: {
             int oI = 0;
             for (int i = 1; i< 3; i++) {
-                if (eNumber[i] > 0){
+                if (eNumber[i] != 0){
                     oI = i;
                 }
             }
@@ -300,83 +367,83 @@ void EquationGenerator::detNum (int eNumber[], int n, string o) {
                 case 0:
                     switch (otoi(o)) {
                         case 0:
-                            r = rand() % (abs(eNumber[0] - 1) == 0 ? 10 : abs(eNumber[0] - 1) ) + 1;
-                            eNumber[1] = r;
-                            eNumber[2] = eNumber[0] - r;
+                            r = rand() % (abs(*eNumber[0] - 1) == 0 ? 10 : abs(*eNumber[0] - 1) ) + 1;
+                            eNumber[1] = new int (r);
+                            eNumber[2] = new int (*eNumber[0] - r);
                             break;
                         case 1:
                             r = (rand() % 89) + 10;
-                            eNumber[1] = r;
-                            eNumber[2] = eNumber[0] + r;
+                            eNumber[1] = new int (r);
+                            eNumber[2] = new int (*eNumber[0] + r);
                             break;
                         case 2:
                             r = (rand() % 10) + 2;
-                            eNumber[1] = r;
-                            eNumber[2] = eNumber[0] * r;
+                            eNumber[1] = new int (r);
+                            eNumber[2] = new int (*eNumber[0] * r);
                             break;
                         case 3:
                             r = (rand() % 10) + 2;
-                            if (eNumber[0] % r != 0) {
-                                r = gcd (eNumber[0], r);
+                            if (*eNumber[0] % r != 0) {
+                                r = gcd (*eNumber[0], r);
                             }
-                            eNumber[1] = r;
-                            eNumber[2] = eNumber[0] / r;
+                            eNumber[1] = new int (r);
+                            eNumber[2] = new int (*eNumber[0] / r);
                             break;
                     }
                     break;
                 case 1:
                     switch (otoi(o)) {
                         case 0:
-                            r = (rand() % (89 + eNumber[1])) + 10;
-                            if (r < eNumber[1]) {
-                                eNumber[2] = r;
-                                eNumber[0] = r + eNumber[1];
+                            r = (rand() % (89 + *eNumber[1])) + 10;
+                            if (r < *eNumber[1]) {
+                                eNumber[2] = new int (r);
+                                eNumber[0] = new int (r + *eNumber[1]);
                             } else {
-                                eNumber[0] = r;
-                                eNumber[2] = eNumber[0] - eNumber[1];
+                                eNumber[0] = new int (r);
+                                eNumber[2] = new int (*eNumber[0] - *eNumber[1]);
                             }
                             break;
                         case 1:
                             r = (rand() % 89) + 10;
-                            eNumber[0] = r;
-                            eNumber[2] = eNumber[1] + r;
+                            eNumber[0] = new int (r);
+                            eNumber[2] = new int (*eNumber[1] + r);
                             break;
                         case 2:
                             r = (rand() % 10) + 2;
-                            eNumber[0] = r;
-                            eNumber[2] = eNumber[1] * r;
+                            eNumber[0] = new int (r);
+                            eNumber[2] = new int (*eNumber[1] * r);
                             break;
                         case 3:
                             r = (rand() % 10) + 2;
-                            eNumber[0] = eNumber[1] * r;
-                            eNumber[2] = r;
+                            eNumber[0] = new int (*eNumber[1] * r);
+                            eNumber[2] = new int (r);
                             break;
                     }
                     break;
                 default:
                     switch (otoi(o)) {
                         case 0:
-                            r = rand() % ((abs(eNumber[2] - 1)) <= 0 ? 10 : abs(eNumber[2] - 1)) + 1;
-                            eNumber[0] = r + eNumber[2];
-                            eNumber[1] = r;
+                            r = rand() % ((abs(*eNumber[2] - 1)) <= 0 ? 10 : abs(*eNumber[2] - 1)) + 1;
+                            eNumber[0] = new int (r + *eNumber[2]);
+                            eNumber[1] = new int (r);
                             break;
                         case 1:
-                            r = rand() % ((abs(eNumber[2] - 1)) <= 0 ? 10 : abs(eNumber[2] - 1)) + 1;
-                            eNumber[0] = r;
-                            eNumber[1] = eNumber[2] - r;
+                            r = rand() % ((abs(*eNumber[2] - 1)) <= 0 ? 10 : abs(*eNumber[2] - 1)) + 1;
+                            eNumber[0] = new int (r);
+                            eNumber[1] = new int (*eNumber[2] - r);
                             break;
                         case 2:
                             r = (rand() % 10) + 2;
-                            if (eNumber[2] % r != 0) {
-                                    r = gcd(r, eNumber[2]);
+                            if (*eNumber[2] % r != 0) {
+                                    r = gcd(r, *eNumber[2]);
                             }
-                            eNumber[0] = r;
-                            eNumber[1] = eNumber[2] / r;
+                            eNumber[0] = new int (r);
+                            eNumber[1] = new int (*eNumber[2] / r);
                             break;
                         case 3:
                             r = (rand() % 10) + 2;
-                            eNumber[0] = eNumber[2] * r;
-                            eNumber[1] = r;
+                            eNumber[0] = new int (*eNumber[2] * r);
+                            eNumber[1] = new int (r);
                             break;
                     }
                     break;
@@ -385,58 +452,58 @@ void EquationGenerator::detNum (int eNumber[], int n, string o) {
         }
         case 2:
             {
-            int zI = 0;
+            int nullptrI = 0;
             for (int i = 1; i< 3; i++) {
                 if (eNumber[i] == 0){
-                    zI = i;
+                    nullptrI = i;
                 }
             }
-            switch(zI) {
+            switch(nullptrI) {
                 case 0:
                     switch (otoi(o)) {
                         case 0:
-                            eNumber[0] = eNumber[2] + eNumber[1];
+                            eNumber[0] = new int (*eNumber[2] + *eNumber[1]);
                             break;
                         case 1:
-                            eNumber[0] = eNumber[2] - eNumber[1];
+                            eNumber[0] = new int (*eNumber[2] - *eNumber[1]);
                             break;
                         case 2:
-                            eNumber[0] = eNumber[2] / eNumber[1];
+                            eNumber[0] = new int (*eNumber[2] / *eNumber[1]);
                             break;
                         case 3:
-                            eNumber[0] = eNumber[2] * eNumber[1];
+                            eNumber[0] = new int (*eNumber[2] * *eNumber[1]);
                             break;
                     }
                     break;
                 case 1:
                     switch (otoi(o)) {
                         case 0:
-                            eNumber[1] = eNumber[0] - eNumber[2];
+                            eNumber[1] = new int (*eNumber[0] - *eNumber[2]);
                             break;
                         case 1:
-                            eNumber[1] = eNumber[2] - eNumber[0];
+                            eNumber[1] = new int (*eNumber[2] - *eNumber[0]);
                             break;
                         case 2:
-                            eNumber[1] = eNumber[2] / eNumber[0];
+                            eNumber[1] = new int (*eNumber[2] / *eNumber[0]);
                             break;
                         case 3:
-                            eNumber[1] = eNumber[0] / eNumber[2];
+                            eNumber[1] = new int (*eNumber[0] / *eNumber[2]);
                             break;
                     }
                     break;
                 default:
                     switch (otoi(o)) {
                         case 0:
-                            eNumber[2] = eNumber[0] - eNumber[1];
+                            eNumber[2] = new int (*eNumber[0] - *eNumber[1]);
                             break;
                         case 1:
-                            eNumber[2] = eNumber[0] + eNumber[1];
+                            eNumber[2] = new int (*eNumber[0] + *eNumber[1]);
                             break;
                         case 2:
-                            eNumber[2] = eNumber[0] * eNumber[1];
+                            eNumber[2] = new int (*eNumber[0] * *eNumber[1]);
                             break;
                         case 3:
-                            eNumber[2] = eNumber[0] / eNumber[1];
+                            eNumber[2] = new int (*eNumber[0] / *eNumber[1]);
                             break;
                     }
                     break;
@@ -446,7 +513,8 @@ void EquationGenerator::detNum (int eNumber[], int n, string o) {
     }
 }
 
-void EquationGenerator::setMathEQ (int y, int x, int eNumber[], bool isV) {
+void EquationGenerator::setMathEQ (int y, int x, int **eNumber, bool isV) {
+    string cellNewValue;
     int ctr = 0;
     if (isV) {
         int newY = y % 2;
@@ -454,7 +522,9 @@ void EquationGenerator::setMathEQ (int y, int x, int eNumber[], bool isV) {
             if ((k + newY) % 2 == 0) {
                 if (!m_visited[k][x]) {
                     NumericCell *nCell = dynamic_cast<NumericCell *> ((*m_adjMatrix)[k][x]);
-                    nCell->setValue(to_string(eNumber[ctr]));
+                    cellNewValue = to_string(*eNumber[ctr]);
+                    setMaxNumberLength(cellNewValue.size());
+                    nCell->setValue(cellNewValue);
                     nCell->setState(false);
                     m_visited[k][x] = true;
                 }
@@ -467,7 +537,9 @@ void EquationGenerator::setMathEQ (int y, int x, int eNumber[], bool isV) {
             if ((k + newX) % 2 == 0) {
                 if (!m_visited[y][k]) {
                     NumericCell *nCell = dynamic_cast<NumericCell *> ((*m_adjMatrix)[y][k]);
-                    nCell->setValue(to_string(eNumber[ctr]));
+                    cellNewValue = to_string(*eNumber[ctr]);
+                    setMaxNumberLength(cellNewValue.size());
+                    nCell->setValue(cellNewValue);
                     nCell->setState(false);
                     m_visited[y][k] = true;
                 }

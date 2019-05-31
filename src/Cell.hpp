@@ -27,7 +27,7 @@ namespace Cell {
 
 class CoreCell {
 private :
-    int m_lenght = 7;
+    static int m_lenght;
 public:
     virtual string toString() = 0;
     void setLength(int newLingth);

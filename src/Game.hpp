@@ -31,7 +31,7 @@ private:
     vector < vector < CoreCell *> > *m_adjMatrix;
     vector < vector < node > > *m_adjList;
     int m_at[3] = {0, 2, 4};
-    int m_height, m_width, m_max = 9, m_per;
+    int m_height, m_width, m_cellLength = 9, m_per;
     GridBuilder m_GridBuilder;
     EquationGenerator m_EquationGenerator;
     int detPer(int n, int m);

@@ -73,29 +73,22 @@ void Game::newGame (int startY, int startX, int height, int width, bool isVertic
     m_EquationGenerator.setHeight(m_height);
     m_EquationGenerator.setWidth(m_width);
     m_EquationGenerator.generateEquation(startY, startX, m_adjMatrix);
+    m_cellLength = m_EquationGenerator.getCellLenght();
+    (*(*m_adjMatrix)[0][0]).setLength(m_cellLength - 2);
 }
 
 vector < string >  Game::__toString() {
     vector < string > slist;
     string line = "";
-    string s1 = "";
-    int c = m_max - 2;
-    while (c != 0) {
-        s1 += " ";
-        c--;
-    }
-    string s2 = "";
-    int c2 = m_max;
+    string s1;
+    s1.assign(m_cellLength - 2, ' ');
+    string s2;
+    int c2 = m_cellLength - 1;
+    s2.assign (c2 - 1, '-');
+    s2.insert(s2.begin(), '+');
     s2 += "+";
-    c2--;
-    for (int i = 1 ;i < c2; i++){
-        s2 += "-";
-    }
-    s2 += "+";
-    string ss = "";
-    for (int i = 1 ;i < c2; i++){
-        ss += "-";
-    }
+    string ss;
+    ss.assign (c2 - 1, '-');
     ss += "+";
     bool is = true;
     for (int j = 0; j < (*m_adjMatrix)[0].size();j++) {
@@ -174,11 +167,14 @@ vector < string >  Game::__toString() {
 void Game::printGame() {
     vector < string > slist = __toString();
     printf("\n%5s    ", " ");
+    string s1, s2;
+    s1.assign((m_cellLength - 2) / 2, ' ');
+    s2.assign(m_cellLength / 2, ' ');
     for (int i = 0; i < m_width; i++ ) {
         if (i > 9) {
-            printf("   %2d   ", i);
+            printf("%s%2d%s", s1.c_str(), i, s1.c_str());
         } else {
-            printf("    %d   ", i);
+            printf("%s%d%s", s2.c_str(), i, s1.c_str());
         }
     }
     cout << endl << endl;

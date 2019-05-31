@@ -20,6 +20,8 @@
 
 using namespace Cell;
 
+int CoreCell::m_lenght = 7;
+
 CoreCell::CoreCell(int len) {
     CoreCell::setLength(len);
 }
@@ -47,21 +49,19 @@ ValuedCell::ValuedCell(string value, int len) : CoreCell(len){
 }
 
 string BlockedCell::toString () {
-    string str = "";
-    for (int i = 0; i < getLength(); i++) {
-        str += " ";
-    }
+    string str;
+    str.assign(getLength(), ' ');
     return str;
 }
 
 string OperatorCell::toString () {
-    string str = "";
+    string str;
     int n = getLength() - getValue().length();
-    for (int i = 0; i < n/ 2; i++) {
-        str += " ";
-    }
-    str+= getValue();
-    for (int i = 0; i < n/ 2; i++) {
+    int m = n / 2;
+    str.assign(m, ' ');
+    str += getValue();
+    m += (n & 1);
+    for (int i = 0; i < m; i++) {
         str += " ";
     }
     return str;
@@ -91,23 +91,23 @@ OperatorCell::OperatorCell(string Value) {
 }
 
 string NumericCell::toString () {
-    string str = "";
+    string str;
     if (m_visible) {
         int n = getLength() - getValue().length();
-        for (int i = 0; i < n/ 2; i++) {
-            str += " ";
-        }
-        str+= getValue();
-        for (int i = 0; i < n/ 2 + n % 2; i++) {
+        int m = n / 2;
+        str.assign(m, ' ');
+        str += getValue();
+        m += (n & 1);
+        for (int i = 0; i < m; i++) {
             str += " ";
         }
     } else {
-        int n = getLength() - m_gValue.length();
-        for (int i = 0; i < n/ 2; i++) {
-            str += " ";
-        }
+        int n = getLength() - getValue().length();
+        int m = n / 2;
+        str.assign(m, ' ');
         str+= m_gValue;
-        for (int i = 0; i < n/ 2 + n % 2; i++) {
+        m += (n & 1);
+        for (int i = 0; i < m; i++) {
             str += " ";
         }
     }

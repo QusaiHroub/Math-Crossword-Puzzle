@@ -25,7 +25,7 @@ using namespace Cell;
 
 class EquationGenerator {
 private:
-    int m_width, m_height, m_startY, m_startX;
+    int m_width, m_height, m_startY, m_startX, m_maxNumberLength = 7;
     vector < vector < CoreCell * > > *m_adjMatrix;
     vector < vector < bool > > m_visited;
     const string m_oList[4] = {"+", "×", "-", "÷"};
@@ -33,10 +33,11 @@ private:
     int y_d[4] = {1,0,0,-1};
     int nextCell[3] = {0, 2 , 4};
     void DFS (const int x, const int y, bool isV);
-    string detOpr (int eNumber[], int numberOfNonZero);
-    void detNum (int a[], int n, string o);
-    void setMathEQ (int y, int x, int a[], bool isV);
+    string detOpr (int **eNumber, int numberOfNonZero);
+    void detNum (int **eNumber, int n, string o);
+    void setMathEQ (int y, int x, int **eNumber, bool isV);
     int gcd(int a, int b);
+    void setMaxNumberLength(int newLength);
 
 
 public:
@@ -47,5 +48,6 @@ public:
     void generateEquation (int startY, int startX, vector < vector < CoreCell * > > *adjMatrix);
     void generateEquation (vector < vector < CoreCell * > > *adjMatrix);
     void generateEquation ();
+    int getCellLenght();
 };
 
