@@ -229,7 +229,12 @@ void Game::playGame () {
                 }
                 break;
             case 2:
-
+                if (m_Checker.cheakIsAllFill(m_adjMatrix, m_adjList, m_nodeList)){
+                    if (m_Checker.testSolution(m_adjMatrix, m_adjList, m_nodeList)) {
+                        cout << "yours answer is correct.." << endl;
+                        isEnded = true;
+                    }
+                }
                 break;
             case 3:
                 isEnded = true;

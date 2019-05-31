@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include "GridBuilder.hpp"
 #include "EquationGenerator.hpp"
+#include "Checker.hpp"
 
 using namespace std;
 using namespace Cell;
@@ -36,6 +37,7 @@ private:
     double m_per;
     GridBuilder m_GridBuilder;
     EquationGenerator m_EquationGenerator;
+    Checker m_Checker;
     double detPer(int n, int m);
     void printList();
     void printGame();

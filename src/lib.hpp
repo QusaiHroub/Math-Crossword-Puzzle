@@ -16,6 +16,9 @@
 * more details.
 */
 
+#ifndef LIB
+#define LIB
+
 struct node {
     int nodeNumber, x, y;
     bool isVerticale;
@@ -26,3 +29,4 @@ struct lNode {
     bool isV, dir, isMid;
     int list[3];
 };
+#endif
