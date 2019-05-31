@@ -30,6 +30,7 @@ private:
     int x_d[4] = {0,1,-1,0};
     int y_d[4] = {1,0,0,-1};
     int nextCell[3] = {0, 2 , 4};
+    int newX, newY;
     vector < vector < CoreCell *> > *m_adjMatrix;
     vector < node > *m_nodeList;
     vector < vector < int > > *m_adjList;

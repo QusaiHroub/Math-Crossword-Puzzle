@@ -58,17 +58,21 @@ void Game::init (int height, int width, double per) {
 
 double Game::detPer(int height, int width){
     double per = 6;
-    double x = 0.5;
-    int r = 0;
     if (height > width) {
-        r = height / width;
-    } else if (width > height) {
-        r = width / height;
+        if (height / width >= 20) {
+            per--;
+        }
+        if (height / width >= 100) {
+            per--;
+        }
+    } else {
+        if (width / height >= 20) {
+            per--;
+        }
+        if (width / height >= 100) {
+            per--;
+        }
     }
-    if (r > 4) {
-        r = 4;
-    }
-    per -= x * r;
     return per;
 }
 
@@ -79,7 +83,7 @@ void Game::newGame (int startY, int startX, int height, int width, bool isVertic
                                  m_height, m_width, startY, startX, isVerticale, per);
     m_EquationGenerator.setHeight(m_height);
     m_EquationGenerator.setWidth(m_width);
-    m_EquationGenerator.generateEquation(startY, startX, m_adjMatrix);
+    m_EquationGenerator.generateEquation(startY, startX, m_adjMatrix, m_adjList, m_nodeList);
     m_cellLength = m_EquationGenerator.getCellLenght();
     (*(*m_adjMatrix)[0][0]).setLength(m_cellLength - 2);
 }
@@ -178,10 +182,18 @@ void Game::printGame() {
     s1.assign((m_cellLength - 2) / 2, ' ');
     s2.assign(m_cellLength / 2, ' ');
     for (int i = 0; i < m_width; i++ ) {
-        if (i > 9) {
-            printf("%s%2d%s", s1.c_str(), i, s1.c_str());
-        } else {
+        if (i == 100) {
+            s1.pop_back();
+            s2.pop_back();
+        }
+        if (i < 10) {
             printf("%s%d%s", s2.c_str(), i, s1.c_str());
+        } else if (i < 100) {
+            printf("%s%2d%s", s1.c_str(), i, s1.c_str());
+        } else if (i < 1000) {
+            printf("%s%3d%s", s2.c_str(), i, s1.c_str());
+        } else {
+            printf("%s%4d%s", s1.c_str(), i, s1.c_str());
         }
     }
     cout << endl << endl;

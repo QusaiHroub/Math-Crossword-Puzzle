@@ -144,29 +144,28 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
             }
         }
         for (int k = 0; k < 3; k++) {
-            lNode n;
-            n.x = head.isV ? head.x : head.list[k];
-            n.y = head.isV ? head.list[k] : head.y;
-            n.isV = !head.isV;
-            n.isMid = rand() % 2;
-            n.dir = rand() % 2;
-            n.prev = m_adjList->size() - 1;
-            lNode n2 = n;
-            if (n2.isMid) {
-                n2.isMid = 0;
+            n[0].x = head.isV ? head.x : head.list[k];
+            n[0].y = head.isV ? head.list[k] : head.y;
+            n[0].isV = !head.isV;
+            n[0].isMid = rand() % 2;
+            n[0].dir = rand() % 2;
+            n[0].prev = m_adjList->size() - 1;
+            for (int i = 1; i < 3; i++) {
+                n[i] = n[0];
             }
-            if(n.isMid && n.isV) {
-                n.y -= 2;
-                n.dir = true;
-            } else if (n.isMid) {
-                n.x -= 2;
-                n.dir = true;
-            }
-            if (n.y >= 0 && n.x >= 0) {
-                q.push(n);
-            }
-            if (n.isMid != n2.isMid) {
-                q.push(n2);
+            n[1].isMid = !n[1].isMid;
+            n[2].dir = !n[2].dir;
+            for (int i = 0; i < 3; i++) {
+                if(n[i].isMid && n[i].isV) {
+                    n[i].y -= 2;
+                    n[i].dir = true;
+                } else if (n[i].isMid) {
+                    n[i].x -= 2;
+                    n[i].dir = true;
+                }
+                if (n[i].y >= 0 && n[i].x >= 0) {
+                    q.push(n[i]);
+                }
             }
         }
     }

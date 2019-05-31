@@ -41,8 +41,8 @@ bool Checker::DFSForCheakIsAllFill(int n) {
     m_visited[n] = true;
     NumericCell *nCell;
     for (int i = 0; i < 3; i++) {
-        int newX = (*m_nodeList)[n].x + (!((*m_nodeList)[n].isVerticale) * nextCell[i]);
-        int newY = (*m_nodeList)[n].y + ((*m_nodeList)[n].isVerticale * nextCell[i]);
+        newX = (*m_nodeList)[n].x + (!((*m_nodeList)[n].isVerticale) * nextCell[i]);
+        newY = (*m_nodeList)[n].y + ((*m_nodeList)[n].isVerticale * nextCell[i]);
         nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[newY][newX]);
         if (nCell->getGValue() == "") {
             cout << "Cell " << newX << " " << newY << " is not fill." << endl;
@@ -73,12 +73,12 @@ bool Checker::DFSForTestSolution(int n) {
     m_visited[n] = true;
     NumericCell **nCell = new NumericCell*[3];
     for (int i = 0; i < 3; i++) {
-        int newX = (*m_nodeList)[n].x + (!((*m_nodeList)[n].isVerticale) * nextCell[i]);
-        int newY = (*m_nodeList)[n].y + ((*m_nodeList)[n].isVerticale * nextCell[i]);
+        newX = (*m_nodeList)[n].x + (!((*m_nodeList)[n].isVerticale) * nextCell[i]);
+        newY = (*m_nodeList)[n].y + ((*m_nodeList)[n].isVerticale * nextCell[i]);
         nCell[i] = dynamic_cast<NumericCell *> ((*m_adjMatrix)[newY][newX]);
     }
-    int newX = (*m_nodeList)[n].x + (!((*m_nodeList)[n].isVerticale));
-    int newY = (*m_nodeList)[n].y + ((*m_nodeList)[n].isVerticale);
+    newX = (*m_nodeList)[n].x + (!((*m_nodeList)[n].isVerticale));
+    newY = (*m_nodeList)[n].y + ((*m_nodeList)[n].isVerticale);
     OperatorCell *oCell =  dynamic_cast<OperatorCell *> ((*m_adjMatrix)[newY][newX]);
     if (!getR(oCell->getValue(),
             stoi(nCell[0]->getGValue()),

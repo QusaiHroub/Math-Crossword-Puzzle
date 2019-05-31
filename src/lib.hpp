@@ -20,7 +20,7 @@
 #define LIB
 
 struct node {
-    int nodeNumber, x, y;
+    int x, y;
     bool isVerticale;
 };
 

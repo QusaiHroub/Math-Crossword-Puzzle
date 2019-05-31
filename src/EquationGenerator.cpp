@@ -58,182 +58,71 @@ void EquationGenerator::setMaxNumberLength(int newLength) {
 }
 
 
-void EquationGenerator::generateEquation (int startY, int startX, vector < vector < CoreCell * > > *adjMatrix) {
+void EquationGenerator::generateEquation (int startY, int startX, vector < vector < CoreCell * > > *adjMatrix,
+                                          vector < vector < int > > *adjList, vector < node > *nodeList) {
     m_startY = startY;
     m_startX = startX;
-    generateEquation(adjMatrix);
+    generateEquation(adjMatrix, adjList, nodeList);
 }
 
-void EquationGenerator::generateEquation (vector < vector < CoreCell * > > *adjMatrix) {
+void EquationGenerator::generateEquation (vector < vector < CoreCell * > > *adjMatrix,
+                                          vector < vector < int > > *adjList, vector < node > *nodeList) {
     m_adjMatrix = adjMatrix;
+    m_adjList = adjList;
+    m_nodeList = nodeList;
     generateEquation();
 }
 
 void EquationGenerator::generateEquation (){
     srand(time(0));
     m_visited.assign(m_height, vector < bool >(m_width, 0));
+    m_Visited.assign(m_nodeList->size(), 0);
+    for (int i = 0; i < 3; i++) {
+        eNumber[i] = nullptr;
+    }
     NumericCell *nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[m_startY][m_startX]);
     nCell->setValue(to_string((rand() % 89) + 10));
     setMaxNumberLength(nCell->getValue().size());
     nCell->setState(false);
-    for (int k = 0; k < 4; k++) {
-        int newX, newY;
-        newY = m_startY + y_d[k];
-        newX = m_startX + x_d[k];
-        if (newY >= 0 && newX >= 0 && newY < m_adjMatrix->size() && newX < (*m_adjMatrix)[newY].size()) {
-            if (typeid(*(*m_adjMatrix)[newY][newX]) == typeid(OperatorCell)) {
-                OperatorCell *aboCell = dynamic_cast<OperatorCell *>((*m_adjMatrix)[newY][newX]);
-                if (aboCell->getValue() == "X") {
-                    DFS(m_startY, m_startX, newX == m_startX);
-                }
-            }
+    DFS(0);
+}
+
+void EquationGenerator::DFS(const int n) {
+    if (m_Visited[n]) {
+        return;
+    }
+    m_Visited[n] = true;
+    for (int i = 0; i < 3; i++) {
+        newX = (*m_nodeList)[n].x + (!((*m_nodeList)[n].isVerticale) * nextCell[i]);
+        newY = (*m_nodeList)[n].y + ((*m_nodeList)[n].isVerticale * nextCell[i]);
+        nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[newY][newX]);
+        if (nCell->getValue() == "") {
+            delete eNumber[i];
+            eNumber[i] = nullptr;
+        } else {
+            delete eNumber[i];
+            eNumber[i] = new int(stoi(nCell->getValue()));
         }
+    }
+    numberOfNONnull = 0;
+    for (int v = 0 ; v < 3; v++) {
+        if (eNumber[v] != 0) {
+            numberOfNONnull++;
+        }
+    }
+    newX = (*m_nodeList)[n].x + (!((*m_nodeList)[n].isVerticale));
+    newY = (*m_nodeList)[n].y + ((*m_nodeList)[n].isVerticale);
+    oCell =  dynamic_cast<OperatorCell *> ((*m_adjMatrix)[newY][newX]);
+    oCell->setValue(detOpr(numberOfNONnull));
+    oCell->setState(false);
+    detNum(numberOfNONnull, oCell->getValue());
+    setMathEQ(n);
+    for (int i = 0; i < (*m_adjList)[n].size(); i++) {
+        DFS((*m_adjList)[n][i]);
     }
 }
 
-void EquationGenerator::DFS (const int y, const int x, bool isV) {
-    int **eNumber = new int*[3];
-    for (int i = 0; i < 3; i ++) {
-        (eNumber[i]) = nullptr;
-    }
-    NumericCell *nCell;
-    OperatorCell *oCell;
-    if (isV) {
-        if (m_visited[y + 1][x]) {
-            return;
-        }
-        m_visited[y + 1][x] = true;
-        nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x]);
-        if (nCell->getValue() == "") {
-            delete eNumber[0];
-            eNumber[0] = nullptr;
-        } else {
-            delete eNumber[0];
-            eNumber[0] = new int(stoi(nCell->getValue()));
-        }
-        nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y + 2][x]);
-        if (nCell->getValue() == "") {
-            delete eNumber[1];
-            eNumber[1] = nullptr;
-        } else {
-            delete eNumber[1];
-            eNumber[1] = new int (stoi(nCell->getValue()));
-        }
-        nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y + 4][x]);
-        if (nCell->getValue() == "") {
-            delete eNumber[2];
-            eNumber[2] = nullptr;
-        } else {
-            delete eNumber[2];
-            eNumber[2] = new int(stoi(nCell->getValue()));
-        }
-        int numberOfNONnull = 0;
-        for (int v = 0 ; v < 3; v++) {
-            if (eNumber[v] != 0) {
-                numberOfNONnull++;
-            }
-        }
-        oCell = dynamic_cast<OperatorCell *>((*m_adjMatrix)[y + 1][x]);
-        oCell->setValue(detOpr(eNumber, numberOfNONnull));
-        oCell->setState(false);
-        detNum(eNumber, numberOfNONnull, oCell->getValue());
-        setMathEQ(y, x, eNumber, true);
-    } else {
-        if (m_visited[y][x + 1]) {
-            return;
-        }
-        m_visited[y][x + 1] = true;
-        nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x]);
-        if (nCell->getValue() == "") {
-            delete eNumber[0];
-            eNumber[0] = nullptr;
-        } else {
-            delete eNumber[0];
-            eNumber[0] = new int(stoi(nCell->getValue()));
-        }
-        nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x + 2]);
-        if (nCell->getValue() == "") {
-            delete eNumber[1];
-            eNumber[1] = nullptr;
-        } else {
-            delete eNumber[1];
-            eNumber[1] = new int (stoi(nCell->getValue()));
-        }
-        nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[y][x + 4]);
-        if (nCell->getValue() == "") {
-            delete eNumber[2];
-            eNumber[2] = nullptr;
-        } else {
-            delete eNumber[2];
-            eNumber[2] = new int(stoi(nCell->getValue()));
-        }
-        int numberOfNONnull = 0;
-        for (int v = 0 ; v < 3; v++) {
-            if (eNumber[v] != 0) {
-                numberOfNONnull++;
-            }
-        }
-        oCell = dynamic_cast<OperatorCell *> ((*m_adjMatrix)[y][x + 1]);
-        oCell->setValue(detOpr(eNumber, numberOfNONnull));
-        oCell->setState(false);
-        detNum(eNumber, numberOfNONnull, oCell->getValue());
-        setMathEQ(y,x, eNumber, false);
-    }
-    for (int i = 0; i < 3; i ++) {
-        delete (eNumber[i]);
-    }
-    delete[] eNumber;
-    int  newY, newX, a, b;
-    for (int l = 0; l < 3; l++ ) {
-        newY = y;
-        newX = x;
-        newY += isV ? nextCell[l] : 0;
-        newX += !isV ? nextCell[l] : 0;
-        for (int k = 0; k < 4; k++) {
-            a = newY + y_d[k];
-            b = newX + x_d[k];
-            if (a >= 0 && b >= 0 && a < m_adjMatrix->size() && b < (*m_adjMatrix)[a].size()) {
-                if (typeid(*(*m_adjMatrix)[a][b]) == typeid(OperatorCell)) {
-                    oCell = dynamic_cast<OperatorCell *>((*m_adjMatrix)[a][b]);
-                    if (oCell->getValue() == "X") {
-                        if (b == newX) {
-                            if  (y_d[k] == -1) {
-                                newY -= 2;
-                            }
-                        } else if (x_d[k] == -1) {
-                            newX -= 2;
-                        }
-                        DFS(newY,newX, b == newX);
-                    } else if (oCell->getValue() == "="){
-                        OperatorCell *__oCell;
-                        if (b == newX) {
-                            __oCell = dynamic_cast<OperatorCell *>((*m_adjMatrix)[a - 2][b]);
-                            if  (y_d[k] == -1 && __oCell->getValue() == "X") {
-                                newY -= 4;
-                                DFS(newY,newX, b == newX);
-                            } else if (y_d[k] == 1 && __oCell->getValue() == "X"){
-                                newY -= 2;
-                                DFS(newY,newX, b == newX);
-                            }
-                        } else {
-                            __oCell = dynamic_cast<OperatorCell *>((*m_adjMatrix)[a][b - 2]);
-                            if  (x_d[k] == -1 && __oCell->getValue() == "X") {
-                                newX -= 4;
-                                DFS(newY,newX, b == newX);
-                            } else if (x_d[k] == 1 && __oCell->getValue() == "X"){
-                                newX -= 2;
-                                DFS(newY,newX, b == newX);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-string EquationGenerator::detOpr (int **eNumber, int numberOfNONnull) {
+string EquationGenerator::detOpr (short numberOfNONnull) {
     int nullptrI = 0;
     switch(numberOfNONnull) {
         case 1: {
@@ -346,7 +235,7 @@ int EquationGenerator::otoi(string o) {
     return 3;
 }
 
-void EquationGenerator::detNum (int **eNumber, int numberOfNONnull, string o) {
+void EquationGenerator::detNum (short numberOfNONnull, string o) {
     if (numberOfNONnull == 3)
         return;
     int r;
@@ -508,56 +397,56 @@ void EquationGenerator::detNum (int **eNumber, int numberOfNONnull, string o) {
     }
 }
 
-void EquationGenerator::setMathEQ (int y, int x, int **eNumber, bool isV) {
+void EquationGenerator::setMathEQ (int n) {
     string cellNewValue;
     int ctr = 0, rTime = 1;
-    if (isV) {
-        int newY = y % 2;
-        for (int k = y; k < y + 5; k ++ ){
+    if (m_nodeList->at(n).isVerticale) {
+        int newY = m_nodeList->at(n).y % 2;
+        for (int k = m_nodeList->at(n).y; k < m_nodeList->at(n).y + 5; k ++ ){
             if ((k + newY) % 2 == 0) {
-                if (!m_visited[k][x]) {
+                if (!m_visited[k][m_nodeList->at(n).x]) {
                     bool is;
                     if (rTime) {
                         is = rand() % 7;
                     } else {
                         is = 0;
                     }
-                    if (k == y + 4) {
+                    if (k == m_nodeList->at(n).y + 4) {
                         is = rTime;
                     }
-                    NumericCell *nCell = dynamic_cast<NumericCell *> ((*m_adjMatrix)[k][x]);
+                    NumericCell *nCell = dynamic_cast<NumericCell *> ((*m_adjMatrix)[k][m_nodeList->at(n).x]);
                     cellNewValue = to_string(*eNumber[ctr]);
                     setMaxNumberLength(cellNewValue.size());
                     nCell->setValue(cellNewValue);
                     nCell->setState(is);
                     nCell->setV(!is);
-                    m_visited[k][x] = true;
+                    m_visited[k][m_nodeList->at(n).x] = true;
                     rTime -= is;
                 }
                 ctr++;
             }
         }
     } else {
-        int newX = x % 2;
-        for (int k = x; k < x + 5; k ++ ){
+        int newX = m_nodeList->at(n).x % 2;
+        for (int k = m_nodeList->at(n).x; k < m_nodeList->at(n).x + 5; k ++ ){
             if ((k + newX) % 2 == 0) {
-                if (!m_visited[y][k]) {
+                if (!m_visited[m_nodeList->at(n).y][k]) {
                     bool is;
                     if (rTime) {
                         is = rand() % 7;
                     } else {
                         is = 0;
                     }
-                    if (k == x + 4) {
+                    if (k == m_nodeList->at(n).x + 4) {
                         is = rTime;
                     }
-                    NumericCell *nCell = dynamic_cast<NumericCell *> ((*m_adjMatrix)[y][k]);
+                    NumericCell *nCell = dynamic_cast<NumericCell *> ((*m_adjMatrix)[m_nodeList->at(n).y][k]);
                     cellNewValue = to_string(*eNumber[ctr]);
                     setMaxNumberLength(cellNewValue.size());
                     nCell->setValue(cellNewValue);
                     nCell->setState(is);
                     nCell->setV(!is);
-                    m_visited[y][k] = true;
+                    m_visited[m_nodeList->at(n).y][k] = true;
                     rTime -= is;
 
                 }

@@ -61,7 +61,7 @@ int main() {
     while (printList(), cin >> yourChoice) {
         switch(yourChoice) {
             case 1:
-                cout << "Enter grid size (h , w), max (200, 200), min (6, 6) : ";
+                cout << "Enter grid size (h , w), max (2000, 2000), min (6, 6) : ";
                 cin >> height >> width;
                 if (height < 6) {
                     height = 6;
@@ -69,11 +69,11 @@ int main() {
                 if (width < 6) {
                     width = 6;
                 }
-                if (height > 200) {
-                    height = 200;
+                if (height > 2000) {
+                    height = 2000;
                 }
-                if (width > 200) {
-                    width = 200;
+                if (width > 2000) {
+                    width = 2000;
                 }
                 init();
                 break;
