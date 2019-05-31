@@ -22,7 +22,7 @@ struct node {
 };
 
 struct lNode {
-    int x, y, ctr = 0;
+    int x, y, ctr = 0, prev = -1;
     bool isV, dir, isMid;
     int list[3];
 };

@@ -57,23 +57,26 @@ void Game::init (int height, int width, double per) {
 }
 
 double Game::detPer(int height, int width){
-    int x = height * width;
-    if (x < 100) {
-        return 6;
-    } else if (x <= 1225) {
-        return 5.5;
-    } else if (x <= 5625) {
-        return 4.5;
-    } else if (x <= 22500) {
-        return 3.6;
+    double per = 6;
+    double x = 0.5;
+    int r = 0;
+    if (height > width) {
+        r = height / width;
+    } else if (width > height) {
+        r = width / height;
     }
-    return 3.3;
+    if (r > 4) {
+        r = 4;
+    }
+    per -= x * r;
+    return per;
 }
 
 void Game::newGame (int startY, int startX, int height, int width, bool isVerticale) {
     double per = detPer(height, width);
     init(height, width, per);
-    m_GridBuilder.creatAdjMatrix(&m_adjMatrix, &m_adjList, m_height, m_width, startY, startX, isVerticale, per);
+    m_GridBuilder.creatAdjMatrix(&m_adjMatrix, &m_adjList, & m_nodeList,
+                                 m_height, m_width, startY, startX, isVerticale, per);
     m_EquationGenerator.setHeight(m_height);
     m_EquationGenerator.setWidth(m_width);
     m_EquationGenerator.generateEquation(startY, startX, m_adjMatrix);
@@ -204,7 +207,7 @@ void Game::playGame () {
     int choice, x , y, newValue;
     bool getNewValue;
     bool isEnded = false;
-    while (cin >> choice && !isEnded) {
+    while (!isEnded && cin >> choice) {
         switch (choice) {
             case 1 :
                 getNewValue = true;

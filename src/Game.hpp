@@ -29,7 +29,8 @@ using namespace Cell;
 class Game {
 private:
     vector < vector < CoreCell *> > *m_adjMatrix;
-    vector < vector < node > > *m_adjList;
+    vector < vector < int > > *m_adjList;
+    vector < node > *m_nodeList;
     int m_at[3] = {0, 2, 4};
     int m_height, m_width, m_cellLength = 9;
     double m_per;

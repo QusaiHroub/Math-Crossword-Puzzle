@@ -50,19 +50,33 @@ void GridBuilder::init (int height, int width) {
     }
 }
 
-void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < node > > **adjList,
-                                 int height, int width, int startY, int startX, bool isV, double per) {
+void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < int > > **adjList,
+                                 vector<node> **nodeList, int height, int width, int startY, int startX, bool isV, double per) {
 
     srand (time(NULL));
-    int maxC = (int)((height * width / 5) * (per / 10.0));
-    m_adjList = new vector< vector < node > >();
+    maxC = (int)((height * width / 5) * (per / 10.0));
+    if (m_adjList == nullptr) {
+        m_adjList = new vector< vector < int > >();
+    } else {
+        delete m_adjList;
+        m_adjList = new vector< vector < int > >();
+    }
+    if (m_nodeList == nullptr) {
+        m_nodeList = new vector < node > ();
+    } else {
+        delete m_nodeList;
+        m_nodeList = new vector < node > ();
+    }
     while (m_adjList->size() < maxC) {
         delete m_adjList;
-        m_adjList = new vector< vector < node > >();
+        delete m_nodeList;
+        m_adjList = new vector< vector < int > >();
+        m_nodeList = new vector < node > ();
         creatPuzzle(height, width, startY, startX, isV);
     }
     *adjMatrix = m_adjMatrix;
     *adjList = m_adjList;
+    *nodeList = m_nodeList;
 }
 
  void GridBuilder::creatPuzzle (int height, int width, int startY, int startX, bool isV) {
@@ -81,7 +95,15 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
         if (!cheak(head.y, head.x, head.isV, head.isMid, head.dir)) {
             continue;
         }
-        m_adjList->push_back(vector <node> ());
+        if (head.prev != -1) {
+            (*m_adjList)[head.prev].push_back(m_adjList->size());
+        }
+        m_adjList->push_back(vector <int>());
+        node nNode;
+        nNode.isVerticale = head.isV;
+        nNode.x = head.x;
+        nNode.y = head.y;
+        m_nodeList->push_back(nNode);
         if (head.isV) {
             int newY = head.y;
             if (!head.dir && !head.isMid) {
@@ -121,95 +143,31 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                 }
             }
         }
-        int newAdj = rand() % 12;
-        if ((*m_adjList).size() < ((*m_adjMatrix).size() * (*m_adjMatrix)[0].size() / 5) * 0.3) {
-            newAdj = 1;
-        }
-
-        switch (newAdj) {
-            case 0: case 3: case 6: case 9: case 11:
-                for (int k = 0; k < 2; k++){
-                    lNode n;
-                    int c = rand() % 3;
-                    n.x = head.isV ? head.x : head.list[l2List[c][k]];
-                    n.y = head.isV ? head.list[l2List[c][k]] : head.y;
-                    n.isV = !head.isV;
-                    n.isMid = rand() % 2;
-                    n.dir = rand() % 2;
-                    lNode n2 = n;
-                    if (n2.isMid) {
-                        n2.isMid = 0;
-                    }
-                    if(n.isMid && n.isV) {
-                        n.y -= 2;
-                        n.dir = true;
-                    } else if (n.isMid) {
-                        n.x -= 2;
-                        n.dir = true;
-                    }
-                    if (n.y < 0 || n.x < 0) {
-                        continue;
-                    }
-                    q.push(n);
-                    if (n.isMid != n2.isMid) {
-                        q.push(n2);
-                    }
-                }
-                break;
-            case 1: case 5: case 7: case 8: case 10:
-                for (int k = 0; k < 3; k++) {
-                    lNode n;
-                    n.x = head.isV ? head.x : head.list[k];
-                    n.y = head.isV ? head.list[k] : head.y;
-                    n.isV = !head.isV;
-                    n.isMid = rand() % 2;
-                    n.dir = rand() % 2;
-                    lNode n2 = n;
-                    if (n2.isMid) {
-                        n2.isMid = 0;
-                    }
-                    if(n.isMid && n.isV) {
-                        n.y -= 2;
-                        n.dir = true;
-                    } else if (n.isMid) {
-                        n.x -= 2;
-                        n.dir = true;
-                    }
-                    if (n.y < 0 || n.x < 0) {
-                        continue;
-                    }
-                    q.push(n);
-                    if (n.isMid != n2.isMid) {
-                        q.push(n2);
-                    }
-                }
-                break;
-            default:
-                lNode n;
-                n.x = head.isV ? head.x : head.list[rand() % 3];
-                n.y = head.isV ? head.list[rand() % 3] : head.y;
-                n.isV = !head.isV;
-                n.isMid = rand() % 2;
-                n.dir = rand() % 2;
-                lNode n2 = n;
-                if (n2.isMid) {
-                    n2.isMid = 0;
-                }
-                if(n.isMid && n.isV) {
-                    n.y -= 2;
-                    n.dir = true;
-                } else if (n.isMid) {
-                    n.x -= 2;
-                    n.dir = true;
-                }
-                if (n.y < 0 || n.x < 0) {
-                    continue;
-                }
+        for (int k = 0; k < 3; k++) {
+            lNode n;
+            n.x = head.isV ? head.x : head.list[k];
+            n.y = head.isV ? head.list[k] : head.y;
+            n.isV = !head.isV;
+            n.isMid = rand() % 2;
+            n.dir = rand() % 2;
+            n.prev = m_adjList->size() - 1;
+            lNode n2 = n;
+            if (n2.isMid) {
+                n2.isMid = 0;
+            }
+            if(n.isMid && n.isV) {
+                n.y -= 2;
+                n.dir = true;
+            } else if (n.isMid) {
+                n.x -= 2;
+                n.dir = true;
+            }
+            if (n.y >= 0 && n.x >= 0) {
                 q.push(n);
-                if (n.isMid != n2.isMid) {
-                    q.push(n2);
-                }
-                break;
+            }
+            if (n.isMid != n2.isMid) {
+                q.push(n2);
+            }
         }
     }
 }
