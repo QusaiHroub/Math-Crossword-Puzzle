@@ -127,7 +127,6 @@ void EquationGenerator::DFS (const int y, const int x, bool isV) {
             delete eNumber[2];
             eNumber[2] = new int(stoi(nCell->getValue()));
         }
-        // bug when all value in eNumber equals to 0
         int numberOfNONnull = 0;
         for (int v = 0 ; v < 3; v++) {
             if (eNumber[v] != 0) {
@@ -139,8 +138,6 @@ void EquationGenerator::DFS (const int y, const int x, bool isV) {
         oCell->setState(false);
         detNum(eNumber, numberOfNONnull, oCell->getValue());
         setMathEQ(y, x, eNumber, true);
-        // TODO
-
     } else {
         if (m_visited[y][x + 1]) {
             return;
@@ -170,7 +167,6 @@ void EquationGenerator::DFS (const int y, const int x, bool isV) {
             delete eNumber[2];
             eNumber[2] = new int(stoi(nCell->getValue()));
         }
-        // bug when all value in eNumber equals to 0
         int numberOfNONnull = 0;
         for (int v = 0 ; v < 3; v++) {
             if (eNumber[v] != 0) {
@@ -182,7 +178,6 @@ void EquationGenerator::DFS (const int y, const int x, bool isV) {
         oCell->setState(false);
         detNum(eNumber, numberOfNONnull, oCell->getValue());
         setMathEQ(y,x, eNumber, false);
-        // TODO
     }
     for (int i = 0; i < 3; i ++) {
         delete (eNumber[i]);
@@ -243,7 +238,7 @@ string EquationGenerator::detOpr (int **eNumber, int numberOfNONnull) {
     switch(numberOfNONnull) {
         case 1: {
             int oI = 0;
-            for (int i = 1; i< 3; i++) {
+            for (int i = 1; i < 3; i++) {
                 if (eNumber[i] != 0){
                     oI = i;
                 }
@@ -261,7 +256,7 @@ string EquationGenerator::detOpr (int **eNumber, int numberOfNONnull) {
             switch (nullptrI) {
                 case 0:
                     int r;
-                    if (*eNumber[1] > 0 && *eNumber[1] < *eNumber[2]) {
+                    if (*eNumber[1] != 0 && *eNumber[1] < *eNumber[2]) {
                         if (*eNumber[2] % *eNumber[1] == 0)
                             r = rand() % 2;
                         else
@@ -274,19 +269,19 @@ string EquationGenerator::detOpr (int **eNumber, int numberOfNONnull) {
                     return m_oList[r];
                 case 1:
                     if (*eNumber[0] < *eNumber[2]) {
-                        if (*eNumber[0] > 0 && *eNumber[2] % *eNumber[0] == 0) {
+                        if (*eNumber[0] != 0 && *eNumber[2] % *eNumber[0] == 0) {
                             return m_oList[rand() % 2];
                         }
                         return "+";
                     } else {
-                        if (*eNumber[2] > 0 && *eNumber[0] % *eNumber[2] == 0) {
+                        if (*eNumber[2] != 0 && *eNumber[0] % *eNumber[2] == 0) {
                             return m_oList[(rand() % 2) + 2];
                         }
                         return "-";
                     }
                 default:
                     if (*eNumber[0] > *eNumber[1]) {
-                        if (*eNumber[1] > 0 && rand() % 2 && *eNumber[0] % *eNumber[1] == 0) {
+                        if (*eNumber[1] != 0 && rand() % 2 && *eNumber[0] % *eNumber[1] == 0) {
                             return m_oList[rand() % 4];
                         }
                         return m_oList[rand() % 3];
@@ -305,11 +300,11 @@ string EquationGenerator::detOpr (int **eNumber, int numberOfNONnull) {
             switch (maxI) {
                 case 0:
                     if (*eNumber[0] - *eNumber[1] == *eNumber[2]) {
-                        if (*eNumber[1] > 0 && *eNumber[0] / *eNumber[1] == *eNumber[2]) {
+                        if (*eNumber[1] != 0 && *eNumber[0] / *eNumber[1] == *eNumber[2]) {
                             return m_oList[(rand() % 2) + 2];
                         }
                         return "-";
-                    } else  if (*eNumber[1] > 0 && *eNumber[0] / *eNumber[1] == *eNumber[2]) {
+                    } else  if (*eNumber[1] != 0 && *eNumber[0] / *eNumber[1] == *eNumber[2]) {
                         return "÷";
                     } else {
                         // bug
@@ -515,18 +510,29 @@ void EquationGenerator::detNum (int **eNumber, int numberOfNONnull, string o) {
 
 void EquationGenerator::setMathEQ (int y, int x, int **eNumber, bool isV) {
     string cellNewValue;
-    int ctr = 0;
+    int ctr = 0, rTime = 1;
     if (isV) {
         int newY = y % 2;
         for (int k = y; k < y + 5; k ++ ){
             if ((k + newY) % 2 == 0) {
                 if (!m_visited[k][x]) {
+                    bool is;
+                    if (rTime) {
+                        is = rand() % 7;
+                    } else {
+                        is = 0;
+                    }
+                    if (k == y + 4) {
+                        is = rTime;
+                    }
                     NumericCell *nCell = dynamic_cast<NumericCell *> ((*m_adjMatrix)[k][x]);
                     cellNewValue = to_string(*eNumber[ctr]);
                     setMaxNumberLength(cellNewValue.size());
                     nCell->setValue(cellNewValue);
-                    nCell->setState(false);
+                    nCell->setState(is);
+                    nCell->setV(!is);
                     m_visited[k][x] = true;
+                    rTime -= is;
                 }
                 ctr++;
             }
@@ -536,12 +542,24 @@ void EquationGenerator::setMathEQ (int y, int x, int **eNumber, bool isV) {
         for (int k = x; k < x + 5; k ++ ){
             if ((k + newX) % 2 == 0) {
                 if (!m_visited[y][k]) {
+                    bool is;
+                    if (rTime) {
+                        is = rand() % 7;
+                    } else {
+                        is = 0;
+                    }
+                    if (k == x + 4) {
+                        is = rTime;
+                    }
                     NumericCell *nCell = dynamic_cast<NumericCell *> ((*m_adjMatrix)[y][k]);
                     cellNewValue = to_string(*eNumber[ctr]);
                     setMaxNumberLength(cellNewValue.size());
                     nCell->setValue(cellNewValue);
-                    nCell->setState(false);
+                    nCell->setState(is);
+                    nCell->setV(!is);
                     m_visited[y][k] = true;
+                    rTime -= is;
+
                 }
                 ctr++;
             }
