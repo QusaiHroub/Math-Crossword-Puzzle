@@ -26,7 +26,8 @@ using namespace std;
 Game::Game(){}
 
 Game::~Game(){
-    m_GridBuilder.freeMem(m_adjMatrix);
+    m_GridBuilder.freeMem(&m_adjMatrix);
+    delete m_adjList;
 }
 
 void Game::setWidth (int width) {
@@ -226,7 +227,7 @@ void Game::playGame () {
                 break;
             case 3:
                 isEnded = true;
-                m_GridBuilder.freeMem(m_adjMatrix);
+                m_GridBuilder.freeMem(&m_adjMatrix);
                 return;
         }
         if (!isEnded)

@@ -26,19 +26,22 @@ using namespace std;
 
 GridBuilder::GridBuilder() {}
 
-void GridBuilder::freeMem(vector < vector < CoreCell *> > *adjM) {
-    for (int i = 0; i < (*adjM).size(); i++) {
-        for (int j = 0; j < (*adjM)[i].size(); j++) {
-            delete (*adjM)[i][j];
+void GridBuilder::freeMem(vector < vector < CoreCell *> > **adjM) {
+    if (*adjM == nullptr) {
+        return;
+    }
+    for (int i = 0; i < (*(*adjM)).size(); i++) {
+        for (int j = 0; j < (*(*adjM))[i].size(); j++) {
+            delete (*(*adjM))[i][j];
         }
     }
-    delete adjM;
-    adjM = nullptr;
+    delete (*adjM);
+    (*adjM) = nullptr;
 }
 
 
 void GridBuilder::init (int height, int width) {
-    freeMem(m_adjMatrix);
+    freeMem(&m_adjMatrix);
     m_adjMatrix = new  vector< vector < CoreCell *> >();
     m_adjMatrix->assign(height, vector<CoreCell * > (width));
     for (int i = 0; i < height; i++) {

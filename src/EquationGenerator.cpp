@@ -187,7 +187,7 @@ void EquationGenerator::DFS (const int y, const int x, bool isV) {
     for (int i = 0; i < 3; i ++) {
         delete (eNumber[i]);
     }
-    delete eNumber;
+    delete[] eNumber;
     int  newY, newX, a, b;
     for (int l = 0; l < 3; l++ ) {
         newY = y;
@@ -338,7 +338,7 @@ string EquationGenerator::detOpr (int **eNumber, int numberOfNONnull) {
     return m_oList[rand() % 4];
 }
 
-int otoi(string o) {
+int EquationGenerator::otoi(string o) {
     if (o == "-") {
         return 0;
     }

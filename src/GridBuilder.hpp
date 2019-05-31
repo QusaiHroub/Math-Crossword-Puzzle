@@ -38,6 +38,6 @@ public:
     void creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < node > > **adjList,
                         int height, int width, int startY, int startX, bool isV, int per);
     void creatPuzzle (int height, int width, int startY, int startX, bool isV);
-    void freeMem(vector < vector < CoreCell *> > *adjM);
+    void freeMem(vector < vector < CoreCell *> > **adjM);
 
 };
