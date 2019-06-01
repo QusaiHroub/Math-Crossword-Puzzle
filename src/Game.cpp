@@ -172,14 +172,16 @@ vector < string >  Game::__toString() {
                 __is = true;
             }
         }
+        if ((*sline.rbegin()) != '|') {
+            sline += " ";
+        }
         slist.push_back(sline);
         slist.push_back(line);
     }
     return slist;
 }
 
-void Game::printGame() {
-    vector < string > slist = __toString();
+void Game::printXAxis(){
     printf("\n%5s    ", " ");
     string s1, s2;
     s1.assign((m_cellLength - 2) / 2, ' ');
@@ -199,15 +201,21 @@ void Game::printGame() {
             printf("%s%4d%s", s1.c_str(), i, s1.c_str());
         }
     }
+}
+
+void Game::printGame() {
+    vector < string > slist = __toString();
+    printXAxis();
     cout << endl << endl;
     printf("%5s    %s\n", " ",slist[0].c_str());
     int ctr = 0;
     for (int i = 1; i < slist.size(); i += 2) {
-        printf("%5d    %s\n", ctr, slist[i].c_str());
-        printf("%5s    %s\n", " ", slist[i + 1].c_str());
+        printf("%5d    %s    %d\n", ctr, slist[i].c_str(), ctr);
+        printf("%5s    %s    %s\n", " ", slist[i + 1].c_str(), " ");
         ctr++;
     }
-    cout << endl;
+    printXAxis();
+    cout << endl << endl;
 }
 void Game::printList() {
     cout << "1- Enter new value..." << endl
