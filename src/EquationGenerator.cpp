@@ -76,6 +76,7 @@ void EquationGenerator::generateEquation (){
     srand(time(0));
     m_visited.assign(m_height, vector < bool >(m_width, 0));
     m_Visited.assign(m_nodeList->size(), 0);
+    m_maxNumberLength = 7;
     for (int i = 0; i < 3; i++) {
         eNumber[i] = nullptr;
     }

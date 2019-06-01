@@ -87,6 +87,7 @@ void Game::newGame (int startY, int startX, int height, int width, bool isVertic
     m_EquationGenerator.setWidth(m_width);
     m_EquationGenerator.generateEquation(m_startNode, m_adjMatrix, m_adjList, m_nodeList);
     m_cellLength = m_EquationGenerator.getCellLenght();
+    m_cellLength += !(m_cellLength & 1);
     (*(*m_adjMatrix)[0][0]).setLength(m_cellLength - 2);
 }
 
