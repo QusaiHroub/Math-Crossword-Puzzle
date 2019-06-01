@@ -58,10 +58,9 @@ void EquationGenerator::setMaxNumberLength(int newLength) {
 }
 
 
-void EquationGenerator::generateEquation (int startY, int startX, vector < vector < CoreCell * > > *adjMatrix,
+void EquationGenerator::generateEquation (int startNode, vector < vector < CoreCell * > > *adjMatrix,
                                           vector < vector < int > > *adjList, vector < node > *nodeList) {
-    m_startY = startY;
-    m_startX = startX;
+    m_startNode = startNode;
     generateEquation(adjMatrix, adjList, nodeList);
 }
 
@@ -80,11 +79,11 @@ void EquationGenerator::generateEquation (){
     for (int i = 0; i < 3; i++) {
         eNumber[i] = nullptr;
     }
-    NumericCell *nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[m_startY][m_startX]);
+    NumericCell *nCell = dynamic_cast<NumericCell *>((*m_adjMatrix)[(*m_nodeList)[m_startNode].y][(*m_nodeList)[m_startNode].x]);
     nCell->setValue(to_string((rand() % 89) + 10));
     setMaxNumberLength(nCell->getValue().size());
     nCell->setState(false);
-    DFS(0);
+    DFS(m_startNode);
 }
 
 void EquationGenerator::DFS(const int n) {

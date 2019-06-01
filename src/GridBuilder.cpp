@@ -95,10 +95,11 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
         if (!cheak(head.y, head.x, head.isV, head.isMid, head.dir)) {
             continue;
         }
-        if (head.prev != -1) {
-            (*m_adjList)[head.prev].push_back(m_adjList->size());
-        }
         m_adjList->push_back(vector <int>());
+        if (head.prev != -1) {
+            (*m_adjList)[head.prev].push_back(m_adjList->size() - 1);
+            m_adjList->rbegin()->push_back(head.prev);
+        }
         node nNode;
         nNode.isVerticale = head.isV;
         nNode.x = head.x - (!head.isV) * (!head.dir) * 4;

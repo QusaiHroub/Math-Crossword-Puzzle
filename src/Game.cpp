@@ -81,9 +81,11 @@ void Game::newGame (int startY, int startX, int height, int width, bool isVertic
     init(height, width, per);
     m_GridBuilder.creatAdjMatrix(&m_adjMatrix, &m_adjList, & m_nodeList,
                                  m_height, m_width, startY, startX, isVerticale, per);
+    srand(time(NULL));
+    m_startNode = rand() % m_nodeList->size();
     m_EquationGenerator.setHeight(m_height);
     m_EquationGenerator.setWidth(m_width);
-    m_EquationGenerator.generateEquation(startY, startX, m_adjMatrix, m_adjList, m_nodeList);
+    m_EquationGenerator.generateEquation(m_startNode, m_adjMatrix, m_adjList, m_nodeList);
     m_cellLength = m_EquationGenerator.getCellLenght();
     (*(*m_adjMatrix)[0][0]).setLength(m_cellLength - 2);
 }
