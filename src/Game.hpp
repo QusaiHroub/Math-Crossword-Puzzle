@@ -42,6 +42,7 @@ private:
     double detPer(int n, int m);
     void printList();
     void printGame();
+    void printXAxis();
     vector < string > __toString();
 
 public:
