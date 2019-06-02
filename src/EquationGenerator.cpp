@@ -145,8 +145,8 @@ string EquationGenerator::detOpr (short numberOfNONnull) {
             switch (nullptrI) {
                 case 0:
                     int r;
-                    if (*eNumber[1] != 0 && *eNumber[1] < *eNumber[2]) {
-                        if (*eNumber[2] % *eNumber[1] == 0)
+                    if (*eNumber[1] < *eNumber[2]) {
+                        if (*eNumber[1] != 0 && *eNumber[2] % *eNumber[1] == 0)
                             r = rand() % 2;
                         else
                             r = 0;
@@ -170,7 +170,7 @@ string EquationGenerator::detOpr (short numberOfNONnull) {
                     }
                 default:
                     if (*eNumber[0] > *eNumber[1]) {
-                        if (*eNumber[1] != 0 && rand() % 2 && *eNumber[0] % *eNumber[1] == 0) {
+                        if (*eNumber[1] != 0 && *eNumber[0] % *eNumber[1] == 0) {
                             return m_oList[rand() % 4];
                         }
                         return m_oList[rand() % 3];
