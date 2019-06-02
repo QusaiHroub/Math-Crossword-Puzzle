@@ -29,6 +29,7 @@ Game::~Game(){
     m_GridBuilder.freeMem(m_adjMatrix);
     delete m_adjMatrix;
     delete m_adjList;
+    delete m_nodeList;
 }
 
 void Game::setWidth (int width) {
