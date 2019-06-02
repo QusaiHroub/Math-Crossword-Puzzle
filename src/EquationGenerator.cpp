@@ -150,7 +150,7 @@ string EquationGenerator::detOpr (short numberOfNONnull) {
                             r = rand() % 2;
                         else
                             r = 0;
-                    } else if (*eNumber[1] > 0 && *eNumber[2] % *eNumber[1] == 0){
+                    } else if (*eNumber[1] != 0 && *eNumber[2] % *eNumber[1] == 0){
                         r = (rand() % 2) + 2;
                     } else {
                         r = 2;
@@ -261,12 +261,12 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                             eNumber[2] = new int (*eNumber[0] + r);
                             break;
                         case 2:
-                            r = (rand() % 10) + 2;
+                            r = (rand() % 11) + 2;
                             eNumber[1] = new int (r);
                             eNumber[2] = new int (*eNumber[0] * r);
                             break;
                         case 3:
-                            r = (rand() % 10) + 2;
+                            r = (rand() % 11) + 2;
                             if (*eNumber[0] % r != 0) {
                                 r = gcd (*eNumber[0], r);
                             }
@@ -293,12 +293,12 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                             eNumber[2] = new int (*eNumber[1] + r);
                             break;
                         case 2:
-                            r = (rand() % 10) + 2;
+                            r = (rand() % 11) + 2;
                             eNumber[0] = new int (r);
                             eNumber[2] = new int (*eNumber[1] * r);
                             break;
                         case 3:
-                            r = (rand() % 10) + 2;
+                            r = (rand() % 11) + 2;
                             eNumber[0] = new int (*eNumber[1] * r);
                             eNumber[2] = new int (r);
                             break;
@@ -317,7 +317,7 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                             eNumber[1] = new int (*eNumber[2] - r);
                             break;
                         case 2:
-                            r = (rand() % 10) + 2;
+                            r = (rand() % 11) + 2;
                             if (*eNumber[2] % r != 0) {
                                     r = gcd(r, *eNumber[2]);
                             }
@@ -325,7 +325,7 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                             eNumber[1] = new int (*eNumber[2] / r);
                             break;
                         case 3:
-                            r = (rand() % 10) + 2;
+                            r = (rand() % 11) + 2;
                             eNumber[0] = new int (*eNumber[2] * r);
                             eNumber[1] = new int (r);
                             break;
@@ -352,6 +352,10 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                             eNumber[0] = new int (*eNumber[2] - *eNumber[1]);
                             break;
                         case 2:
+                            if (*eNumber[1] == 0) {
+                                eNumber[0] = new int(0);
+                                break;
+                            }
                             eNumber[0] = new int (*eNumber[2] / *eNumber[1]);
                             break;
                         case 3:
@@ -368,6 +372,10 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                             eNumber[1] = new int (*eNumber[2] - *eNumber[0]);
                             break;
                         case 2:
+                            if (*eNumber[0] == 0) {
+                                eNumber[0] = new int(0);
+                                break;
+                            }
                             eNumber[1] = new int (*eNumber[2] / *eNumber[0]);
                             break;
                         case 3:
