@@ -293,12 +293,12 @@ void EquationGenerator::detNum (short numberOfNONnull, char o) {
                 default:
                     switch (o) {
                         case '-':
-                            r = rand() % ((abs(*eNumber[2] - 1)) == 0 ? 11 : abs(*eNumber[2] - 1)) + 1;
+                            r = (rand() % 89) + 10;
                             eNumber[0] = new int (r + *eNumber[2]);
                             eNumber[1] = new int (r);
                             break;
                         case '+':
-                            r = rand() % ((abs(*eNumber[2] - 1)) == 0 ? 11 : abs(*eNumber[2] - 1)) + 1;
+                            r = (rand() % ((abs(*eNumber[2] - 1)) == 0 ? 11 : abs(*eNumber[2] - 1)) + 1) + 2;
                             eNumber[0] = new int (r);
                             eNumber[1] = new int (*eNumber[2] - r);
                             break;
