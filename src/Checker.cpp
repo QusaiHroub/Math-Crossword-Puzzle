@@ -80,7 +80,7 @@ bool Checker::DFSForTestSolution(int n) {
     newX = (*m_nodeList)[n].x + (!((*m_nodeList)[n].isVerticale));
     newY = (*m_nodeList)[n].y + ((*m_nodeList)[n].isVerticale);
     OperatorCell *oCell =  dynamic_cast<OperatorCell *> ((*m_adjMatrix)[newY][newX]);
-    if (!getR(oCell->getValue(),
+    if (!getR(*(oCell->getValue().begin()),
             stoi(nCell[0]->getGValue()),
             stoi(nCell[1]->getGValue()),
             stoi(nCell[2]->getGValue()))) {
@@ -96,19 +96,20 @@ bool Checker::DFSForTestSolution(int n) {
     return true;
 }
 
-bool Checker::getR (string o, int a, int b, int r) {
-    if ( o == "+") {
-        return a + b == r;
-    } else if ( o == "-") {
-        return a - b == r;
-    } else if ( o == "×") {
-        return a * b == r;
-    } else if ( o == "÷") {
-        if (b == 0) {
-            return false;
-        }
-        return a / b == r;
-    } else if ( o == " ") {
+bool Checker::getR (char o, int a, int b, int r) {
+    switch (o) {
+        case '+':
+            return a + b == r;
+        case '-':
+            return a - b == r;
+        case '×':
+            return a * b == r;
+        case '÷':
+            if (b == 0) {
+                return false;
+            }
+            return a / b == r;
+        case ' ':
             return true;
     }
     return false;

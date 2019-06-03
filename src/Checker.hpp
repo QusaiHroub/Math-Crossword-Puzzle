@@ -18,7 +18,6 @@
 
 #include "Cell.hpp"
 #include <vector>
-#include <string>
 #include "lib.hpp"
 
 using namespace std;
@@ -37,7 +36,7 @@ private:
     vector < bool > m_visited;
     bool DFSForCheakIsAllFill(int n);
     bool DFSForTestSolution(int n);
-    bool getR (string o, int a, int b, int r);
+    bool getR (char o, int a, int b, int r);
 
 public:
     bool cheakIsAllFill(vector < vector < CoreCell *> > *adjMatrix,
