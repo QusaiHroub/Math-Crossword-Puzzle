@@ -37,6 +37,10 @@ void GridBuilder::freeMem(vector < vector < CoreCell *> > *adjM) {
 
 
 void GridBuilder::init (int height, int width) {
+    delete m_adjList;
+    delete m_nodeList;
+    m_adjList = new vector< vector < int > >();
+    m_nodeList = new vector < node > ();
     if (m_adjMatrix == nullptr) {
         m_adjMatrix = new  vector< vector < CoreCell *> >();
     } else {
@@ -53,7 +57,6 @@ void GridBuilder::init (int height, int width) {
 void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < int > > **adjList,
                                  vector<node> **nodeList, int height, int width, int startY, int startX, bool isV, double per) {
 
-    srand (time(NULL));
     maxC = (int)((height * width / 5) * (per / 10.0));
     if (m_adjList == nullptr) {
         m_adjList = new vector< vector < int > >();
@@ -68,10 +71,6 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
         m_nodeList = new vector < node > ();
     }
     while (m_adjList->size() < maxC) {
-        delete m_adjList;
-        delete m_nodeList;
-        m_adjList = new vector< vector < int > >();
-        m_nodeList = new vector < node > ();
         creatPuzzle(height, width, startY, startX, isV);
     }
     *adjMatrix = m_adjMatrix;
@@ -92,7 +91,7 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
     while (!q.empty()) {
         lNode head = q.front();
         q.pop();
-        if (!cheak(head.y, head.x, head.isV, head.isMid, head.dir)) {
+        if (!cheak(head.y, head.x, head.isV, head.isMid)) {
             continue;
         }
         m_adjList->push_back(vector <int>());
@@ -102,14 +101,11 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
         }
         node nNode;
         nNode.isVerticale = head.isV;
-        nNode.x = head.x - (!head.isV) * (!head.dir) * 4;
-        nNode.y = head.y - head.isV * (!head.dir) * 4;
+        nNode.x = head.x;
+        nNode.y = head.y;
         m_nodeList->push_back(nNode);
         if (head.isV) {
             int newY = head.y;
-            if (!head.dir && !head.isMid) {
-                newY -= 4;
-            }
             for (int k = newY; k < newY + 5;k++) {
                 if (k == newY + 1) {
                     delete (*m_adjMatrix)[k][head.x];
@@ -126,9 +122,6 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
             }
         } else {
             int newX = head.x;
-            if (!head.dir && !head.isMid) {
-                newX -= 4;
-            }
             for (int k = newX; k < newX + 5;k++) {
                 if (k == newX + 1) {
                     delete (*m_adjMatrix)[head.y][k];
@@ -157,12 +150,22 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
             n[1].isMid = !n[1].isMid;
             n[2].dir = !n[2].dir;
             for (int i = 0; i < 3; i++) {
-                if(n[i].isMid && n[i].isV) {
-                    n[i].y -= 2;
-                    n[i].dir = true;
-                } else if (n[i].isMid) {
-                    n[i].x -= 2;
-                    n[i].dir = true;
+                if(n[i].isMid) {
+                    if (n[i].isV) {
+                        n[i].y -= 2;
+                        n[i].dir = true;
+                    } else {
+                        n[i].x -= 2;
+                        n[i].dir = true;
+                    }
+                } else if (!n[i].dir) {
+                    if (n[i].isV) {
+                        n[i].y -= 4;
+                        n[i].dir = true;
+                    } else {
+                        n[i].x -= 4;
+                        n[i].dir = true;
+                    }
                 }
                 if (n[i].y >= 0 && n[i].x >= 0) {
                     q.push(n[i]);
@@ -172,101 +175,45 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
     }
 }
 
-bool GridBuilder::cheak (int y, int x, bool isV, bool isMid, bool dir) {
+bool GridBuilder::cheak (int y, int x, bool isV, bool isMid) {
     if (isV) {
-        if (dir) {
-            if (y + 5 > (*m_adjMatrix).size()) {
-                return false;
-            }
-            if (y + 6 < (*m_adjMatrix).size() && (typeid(BlockedCell) != typeid(*(*m_adjMatrix)[y + 5][x]))) {
-                return false;
-            }
-            if (y > 0 && typeid(BlockedCell) != typeid(*(*m_adjMatrix)[y - 1][x])) {
-                return false;
-            }
-            if (typeid(BlockedCell) != typeid(*(*m_adjMatrix)[y + 3][x])
-                || typeid(BlockedCell) != typeid(*(*m_adjMatrix)[y + 1][x])) {
-                return false;
-            }
-            if (typeid(*(*m_adjMatrix)[y + 1][x]) == typeid(OperatorCell)) {
-                OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
-                if (o->getValue() == "=") {
-                    return false;
-                }
-            }
-        } else {
-            if (y - 5 < 0) {
-                return false;
-            }
-            if (y - 4 > 0 && typeid(*(*m_adjMatrix)[y - 5][x]) ==  typeid(OperatorCell)) {
-                OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y - 5][x]);
-                if (o->getValue() == "=") {
-                    return false;
-                }
-            }
-            if (y + 1 < (*m_adjMatrix).size() && typeid(*(*m_adjMatrix)[y + 1][x]) != typeid(BlockedCell)) {
-                return false;
-            }
-            if (y > 0 && typeid(*(*m_adjMatrix)[y - 1][x]) != typeid(BlockedCell)) {
-                return false;
-            }
-            if (typeid(*(*m_adjMatrix)[y - 1][x]) != typeid(BlockedCell)
-                || typeid(*(*m_adjMatrix)[y - 3][x]) != typeid(BlockedCell) ) {
-                return false;
-            }
-            if (typeid(*(*m_adjMatrix)[y - 3][x]) == typeid(OperatorCell)) {
-                OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
-                if (o->getValue()== "=") {
-                    return false;
-                }
+        if (y + 5 > (*m_adjMatrix).size()) {
+            return false;
+        }
+        if (y + 6 < (*m_adjMatrix).size() && (typeid(BlockedCell) != typeid(*(*m_adjMatrix)[y + 5][x]))) {
+            return false;
+        }
+        if (y > 0 && typeid(BlockedCell) != typeid(*(*m_adjMatrix)[y - 1][x])) {
+            return false;
+        }
+        if (typeid(BlockedCell) != typeid(*(*m_adjMatrix)[y + 3][x])
+            || typeid(BlockedCell) != typeid(*(*m_adjMatrix)[y + 1][x])) {
+            return false;
+        }
+        if (typeid(*(*m_adjMatrix)[y + 1][x]) == typeid(OperatorCell)) {
+            OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
+            if (o->getValue() == "=") {
+            return false;
             }
         }
     } else {
-        if (dir) {
-            if (x + 5 > (*m_adjMatrix)[y].size()) {
+        if (x + 5 > (*m_adjMatrix)[y].size()) {
+            return false;
+        }
+        if (x + 6  < (*m_adjMatrix)[y].size() && typeid(*(*m_adjMatrix)[y][x + 5]) != typeid(BlockedCell)) {
+            return false;
+        }
+        if (x > 0 && typeid(*(*m_adjMatrix)[y][x - 1]) != typeid(BlockedCell)) {
+            return false;
+        }
+        if (typeid(*(*m_adjMatrix)[y][x + 3]) != typeid(BlockedCell)
+            || typeid(*(*m_adjMatrix)[y][x + 1]) != typeid(BlockedCell)) {
+            return false;
+        }
+        if (typeid(*(*m_adjMatrix)[y][x + 1]) == typeid(OperatorCell)) {
+            OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
+            if (o->getValue() == "=") {
                 return false;
-            }
-            if (x + 6  < (*m_adjMatrix)[y].size() && typeid(*(*m_adjMatrix)[y][x + 5]) != typeid(BlockedCell)) {
-                return false;
-            }
-            if (x > 0 && typeid(*(*m_adjMatrix)[y][x - 1]) != typeid(BlockedCell)) {
-                return false;
-            }
-            if (typeid(*(*m_adjMatrix)[y][x + 3]) != typeid(BlockedCell)
-                || typeid(*(*m_adjMatrix)[y][x + 1]) != typeid(BlockedCell)) {
-                return false;
-            }
-            if (typeid(*(*m_adjMatrix)[y][x + 1]) == typeid(OperatorCell)) {
-                OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
-                if (o->getValue() == "=") {
-                    return false;
-                }
-            }
-        } else {
-            if (x - 5 < 0) {
-                return false;
-            }
-            if (x - 4 > 0 && typeid(*(*m_adjMatrix)[y][x - 5]) ==  typeid(OperatorCell)) {
-                OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y][x - 5]);
-                if (o->getValue() == "=") {
-                    return false;
-                }
-            }
-            if (x + 1 < (*m_adjMatrix)[y].size() && typeid(*(*m_adjMatrix)[y][x + 1]) != typeid(BlockedCell)) {
-                return false;
-            }
-            if (x > 0 && typeid(*(*m_adjMatrix)[y][x - 1]) != typeid(BlockedCell)) {
-                return false;
-            }
-            if (typeid(*(*m_adjMatrix)[y][x - 1]) != typeid(BlockedCell)
-                || typeid(*(*m_adjMatrix)[y][x - 3]) != typeid(BlockedCell) ) {
-                return false;
-            }
-            if (typeid(*(*m_adjMatrix)[y][x - 3]) == typeid(OperatorCell)) {
-                OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
-                if (o->getValue() == "=" ) {
-                    return false;
-                }
             }
         }
     }

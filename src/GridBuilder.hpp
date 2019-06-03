@@ -32,7 +32,7 @@ private:
     int l2List[3][2] = { {0, 1},
                          {1, 2},
                          {0, 2} };
-    bool cheak (int y, int x, bool isV, bool isMid, bool dir);
+    bool cheak (int y, int x, bool isV, bool isMid);
     lNode n[3];
 
 public:
