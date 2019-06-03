@@ -250,7 +250,7 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                 case 0:
                     switch (otoi(o)) {
                         case 0:
-                            r = rand() % (abs(*eNumber[0] - 1) == 0 ? 10 : abs(*eNumber[0] - 1) ) + 1;
+                            r = rand() % (abs(*eNumber[0] - 1) == 0 ? 11 : abs(*eNumber[0] - 1) ) + 1;
                             eNumber[1] = new int (r);
                             eNumber[2] = new int (*eNumber[0] - r);
                             break;
@@ -306,12 +306,12 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                 default:
                     switch (otoi(o)) {
                         case 0:
-                            r = rand() % ((abs(*eNumber[2] - 1)) <= 0 ? 10 : abs(*eNumber[2] - 1)) + 1;
+                            r = rand() % ((abs(*eNumber[2] - 1)) == 0 ? 11 : abs(*eNumber[2] - 1)) + 1;
                             eNumber[0] = new int (r + *eNumber[2]);
                             eNumber[1] = new int (r);
                             break;
                         case 1:
-                            r = rand() % ((abs(*eNumber[2] - 1)) <= 0 ? 10 : abs(*eNumber[2] - 1)) + 1;
+                            r = rand() % ((abs(*eNumber[2] - 1)) == 0 ? 11 : abs(*eNumber[2] - 1)) + 1;
                             eNumber[0] = new int (r);
                             eNumber[1] = new int (*eNumber[2] - r);
                             break;
