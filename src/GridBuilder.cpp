@@ -91,7 +91,7 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
     while (!q.empty()) {
         lNode head = q.front();
         q.pop();
-        if (!cheak(head.y, head.x, head.isV, head.isMid)) {
+        if (!cheak(head.y, head.x, head.isV)) {
             continue;
         }
         m_adjList->push_back(vector <int>());
@@ -153,19 +153,17 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
                 if(n[i].isMid) {
                     if (n[i].isV) {
                         n[i].y -= 2;
-                        n[i].dir = true;
                     } else {
                         n[i].x -= 2;
-                        n[i].dir = true;
                     }
+                    n[i].dir = true;
                 } else if (!n[i].dir) {
                     if (n[i].isV) {
                         n[i].y -= 4;
-                        n[i].dir = true;
                     } else {
                         n[i].x -= 4;
-                        n[i].dir = true;
                     }
+                    n[i].dir = true;
                 }
                 if (n[i].y >= 0 && n[i].x >= 0) {
                     q.push(n[i]);
@@ -175,7 +173,7 @@ void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vec
     }
 }
 
-bool GridBuilder::cheak (int y, int x, bool isV, bool isMid) {
+bool GridBuilder::cheak (int y, int x, bool isV) {
     if (isV) {
         if (y + 5 > (*m_adjMatrix).size()) {
             return false;
@@ -191,8 +189,8 @@ bool GridBuilder::cheak (int y, int x, bool isV, bool isMid) {
             return false;
         }
         if (typeid(*(*m_adjMatrix)[y + 1][x]) == typeid(OperatorCell)) {
-            OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
-            if (o->getValue() == "=") {
+            oCell = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
+            if (oCell->getValue() == "=") {
             return false;
             }
         }
@@ -211,8 +209,8 @@ bool GridBuilder::cheak (int y, int x, bool isV, bool isMid) {
             return false;
         }
         if (typeid(*(*m_adjMatrix)[y][x + 1]) == typeid(OperatorCell)) {
-            OperatorCell *o = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
-            if (o->getValue() == "=") {
+            oCell = dynamic_cast<OperatorCell*>((*m_adjMatrix)[y + 1][x]);
+            if (oCell->getValue() == "=") {
                 return false;
             }
         }
