@@ -114,7 +114,7 @@ void EquationGenerator::DFS(const int n) {
     oCell =  dynamic_cast<OperatorCell *> ((*m_adjMatrix)[newY][newX]);
     oCell->setValue(detOpr(numberOfNONnull));
     oCell->setState(false);
-    detNum(numberOfNONnull, oCell->getValue());
+    detNum(numberOfNONnull, *(oCell->getValue().begin()));
     setMathEQ(n);
     for (int i = 0; i < (*m_adjList)[n].size(); i++) {
         DFS((*m_adjList)[n][i]);
@@ -221,20 +221,7 @@ string EquationGenerator::detOpr (short numberOfNONnull) {
     return m_oList[rand() % 4];
 }
 
-int EquationGenerator::otoi(string o) {
-    if (o == "-") {
-        return 0;
-    }
-    if (o == "+") {
-        return 1;
-    }
-    if (o == "×") {
-        return 2;
-    }
-    return 3;
-}
-
-void EquationGenerator::detNum (short numberOfNONnull, string o) {
+void EquationGenerator::detNum (short numberOfNONnull, char o) {
     if (numberOfNONnull == 3)
         return;
     int r;
@@ -248,23 +235,23 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
             }
             switch(oI) {
                 case 0:
-                    switch (otoi(o)) {
-                        case 0:
+                    switch (o) {
+                        case '-':
                             r = rand() % (abs(*eNumber[0] - 1) == 0 ? 11 : abs(*eNumber[0] - 1) ) + 1;
                             eNumber[1] = new int (r);
                             eNumber[2] = new int (*eNumber[0] - r);
                             break;
-                        case 1:
+                        case '+':
                             r = (rand() % 89) + 10;
                             eNumber[1] = new int (r);
                             eNumber[2] = new int (*eNumber[0] + r);
                             break;
-                        case 2:
+                        case '×':
                             r = (rand() % 11) + 2;
                             eNumber[1] = new int (r);
                             eNumber[2] = new int (*eNumber[0] * r);
                             break;
-                        case 3:
+                        case '÷':
                             r = (rand() % 11) + 2;
                             if (*eNumber[0] % r != 0) {
                                 r = gcd (*eNumber[0], r);
@@ -275,8 +262,8 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                     }
                     break;
                 case 1:
-                    switch (otoi(o)) {
-                        case 0:
+                    switch (o) {
+                        case '-':
                             r = (rand() % (89 + *eNumber[1])) + 10;
                             if (r < *eNumber[1]) {
                                 eNumber[2] = new int (r);
@@ -286,17 +273,17 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                                 eNumber[2] = new int (*eNumber[0] - *eNumber[1]);
                             }
                             break;
-                        case 1:
+                        case '+':
                             r = (rand() % 89) + 10;
                             eNumber[0] = new int (r);
                             eNumber[2] = new int (*eNumber[1] + r);
                             break;
-                        case 2:
+                        case '×':
                             r = (rand() % 11) + 2;
                             eNumber[0] = new int (r);
                             eNumber[2] = new int (*eNumber[1] * r);
                             break;
-                        case 3:
+                        case '÷':
                             r = (rand() % 11) + 2;
                             eNumber[0] = new int (*eNumber[1] * r);
                             eNumber[2] = new int (r);
@@ -304,18 +291,18 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                     }
                     break;
                 default:
-                    switch (otoi(o)) {
-                        case 0:
+                    switch (o) {
+                        case '-':
                             r = rand() % ((abs(*eNumber[2] - 1)) == 0 ? 11 : abs(*eNumber[2] - 1)) + 1;
                             eNumber[0] = new int (r + *eNumber[2]);
                             eNumber[1] = new int (r);
                             break;
-                        case 1:
+                        case '+':
                             r = rand() % ((abs(*eNumber[2] - 1)) == 0 ? 11 : abs(*eNumber[2] - 1)) + 1;
                             eNumber[0] = new int (r);
                             eNumber[1] = new int (*eNumber[2] - r);
                             break;
-                        case 2:
+                        case '×':
                             r = (rand() % 11) + 2;
                             if (*eNumber[2] % r != 0) {
                                     r = gcd(r, *eNumber[2]);
@@ -323,7 +310,7 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                             eNumber[0] = new int (r);
                             eNumber[1] = new int (*eNumber[2] / r);
                             break;
-                        case 3:
+                        case '÷':
                             r = (rand() % 11) + 2;
                             eNumber[0] = new int (*eNumber[2] * r);
                             eNumber[1] = new int (r);
@@ -343,57 +330,57 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
             }
             switch(nullptrI) {
                 case 0:
-                    switch (otoi(o)) {
-                        case 0:
+                    switch (o) {
+                        case '-':
                             eNumber[0] = new int (*eNumber[2] + *eNumber[1]);
                             break;
-                        case 1:
+                        case '+':
                             eNumber[0] = new int (*eNumber[2] - *eNumber[1]);
                             break;
-                        case 2:
+                        case '×':
                             if (*eNumber[1] == 0) {
                                 eNumber[0] = new int(0);
                                 break;
                             }
                             eNumber[0] = new int (*eNumber[2] / *eNumber[1]);
                             break;
-                        case 3:
+                        case '÷':
                             eNumber[0] = new int (*eNumber[2] * *eNumber[1]);
                             break;
                     }
                     break;
                 case 1:
-                    switch (otoi(o)) {
-                        case 0:
+                    switch (o) {
+                        case '-':
                             eNumber[1] = new int (*eNumber[0] - *eNumber[2]);
                             break;
-                        case 1:
+                        case '+':
                             eNumber[1] = new int (*eNumber[2] - *eNumber[0]);
                             break;
-                        case 2:
+                        case '×':
                             if (*eNumber[0] == 0) {
                                 eNumber[0] = new int(0);
                                 break;
                             }
                             eNumber[1] = new int (*eNumber[2] / *eNumber[0]);
                             break;
-                        case 3:
+                        case '÷':
                             eNumber[1] = new int (*eNumber[0] / *eNumber[2]);
                             break;
                     }
                     break;
                 default:
-                    switch (otoi(o)) {
-                        case 0:
+                    switch (o) {
+                        case '-':
                             eNumber[2] = new int (*eNumber[0] - *eNumber[1]);
                             break;
-                        case 1:
+                        case '+':
                             eNumber[2] = new int (*eNumber[0] + *eNumber[1]);
                             break;
-                        case 2:
+                        case '×':
                             eNumber[2] = new int (*eNumber[0] * *eNumber[1]);
                             break;
-                        case 3:
+                        case '÷':
                             eNumber[2] = new int (*eNumber[0] / *eNumber[1]);
                             break;
                     }
