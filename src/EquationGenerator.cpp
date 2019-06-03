@@ -252,8 +252,13 @@ void EquationGenerator::detNum (short numberOfNONnull, string o) {
                     switch (otoi(o)) {
                         case 0:
                             r = rand() % (abs(*eNumber[0] - 1) == 0 ? 10 : abs(*eNumber[0] - 1) ) + 1;
-                            eNumber[1] = new int (r);
-                            eNumber[2] = new int (*eNumber[0] - r);
+                            if (r > *eNumber[0]) {
+                                eNumber[1] = new int (*eNumber[0]);
+                                eNumber[2] = new int (r - *eNumber[0]);
+                            } else {
+                                eNumber[1] = new int (r);
+                                eNumber[2] = new int (*eNumber[0] - r);
+                            }
                             break;
                         case 1:
                             r = (rand() % 89) + 10;
