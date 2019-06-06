@@ -217,3 +217,69 @@ bool GridBuilder::cheak (int y, int x, bool isV) {
     }
     return true;
 }
+
+void GridBuilder::creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < int > > *adjList,
+                        vector<node> *nodeList, int height, int width) {
+
+    m_adjList = adjList;
+    m_nodeList = nodeList;
+    if (m_adjMatrix == nullptr) {
+        m_adjMatrix = new  vector< vector < CoreCell *> >();
+    } else {
+        freeMem(m_adjMatrix);
+    }
+    m_adjMatrix->assign(height, vector<CoreCell * > (width));
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            (*m_adjMatrix)[i][j] = new BlockedCell();
+        }
+    }
+    m_visited.assign(m_nodeList->size(), 0);
+    creatPuzzle(0);
+    *adjMatrix = m_adjMatrix;
+}
+
+void GridBuilder::creatPuzzle (int startNode) {
+    queue<int> q;
+    q.push(startNode);
+    while (!q.empty()) {
+        int front = q.front();
+        q.pop();
+        if (m_visited[front]) {
+            continue;
+        }
+        m_visited[front] = true;
+        for (int i = 0; i < (*m_adjList)[front].size(); i++) {
+            q.push((*m_adjList)[front][i]);
+        }
+        if ((*m_nodeList)[front].isVerticale) {
+            int newY = (*m_nodeList)[front].y;
+            for (int k = newY; k < newY + 5;k++) {
+                if (k == newY + 1) {
+                    delete (*m_adjMatrix)[k][(*m_nodeList)[front].x];
+                    (*m_adjMatrix)[k][(*m_nodeList)[front].x] = new OperatorCell("X");
+                } else if (k == newY + 3) {
+                    delete (*m_adjMatrix)[k][(*m_nodeList)[front].x];
+                    (*m_adjMatrix)[k][(*m_nodeList)[front].x] = new OperatorCell("=" , false);
+                } else {
+                    delete (*m_adjMatrix)[k][(*m_nodeList)[front].x];
+                    (*m_adjMatrix)[k][(*m_nodeList)[front].x] = new NumericCell("");
+                }
+            }
+        } else {
+            int newX = (*m_nodeList)[front].x;
+            for (int k = newX; k < newX + 5;k++) {
+                if (k == newX + 1) {
+                    delete (*m_adjMatrix)[(*m_nodeList)[front].y][k];
+                    (*m_adjMatrix)[(*m_nodeList)[front].y][k] = new OperatorCell("X");
+                } else if (k == newX + 3) {
+                    delete (*m_adjMatrix)[(*m_nodeList)[front].y][k];
+                    (*m_adjMatrix)[(*m_nodeList)[front].y][k] = new OperatorCell("=" , false);
+                } else {
+                    delete (*m_adjMatrix)[(*m_nodeList)[front].y][k];
+                    (*m_adjMatrix)[(*m_nodeList)[front].y][k] = new NumericCell("");
+                }
+            }
+        }
+    }
+}

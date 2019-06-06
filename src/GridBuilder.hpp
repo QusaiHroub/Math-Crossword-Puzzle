@@ -29,6 +29,7 @@ private:
     vector< vector < CoreCell *> > *m_adjMatrix = nullptr;
     vector< vector < int > > *m_adjList = nullptr;
     vector< node > *m_nodeList = nullptr;
+    vector < bool > m_visited;
     int l2List[3][2] = { {0, 1},
                          {1, 2},
                          {0, 2} };
@@ -41,7 +42,10 @@ public:
     void init (int height, int width);
     void creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < int > > **adjList,
                         vector<node> **nodeList, int height, int width, int startY, int startX, bool isV, double per);
+    void creatAdjMatrix(vector< vector < CoreCell *> > **adjMatrix, vector< vector < int > > *adjList,
+                        vector<node> *nodeList, int height, int width);
     void creatPuzzle (int height, int width, int startY, int startX, bool isV);
+    void creatPuzzle (int startNode);
     void freeMem(vector < vector < CoreCell *> > *adjM);
 
 };
