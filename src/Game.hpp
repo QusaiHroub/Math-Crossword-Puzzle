@@ -18,6 +18,7 @@
 
 #include <vector>
 #include <string>
+#include <fstream>
 #include <time.h>
 #include <stdlib.h>
 #include "GridBuilder.hpp"
@@ -29,9 +30,9 @@ using namespace Cell;
 
 class Game {
 private:
-    vector < vector < CoreCell *> > *m_adjMatrix;
-    vector < vector < int > > *m_adjList;
-    vector < node > *m_nodeList;
+    vector < vector < CoreCell *> > *m_adjMatrix = nullptr;
+    vector < vector < int > > *m_adjList = nullptr;
+    vector < node > *m_nodeList = nullptr;
     int m_startNode = 0;
     int m_at[3] = {0, 2, 4};
     int m_height, m_width, m_cellLength = 9;
@@ -44,6 +45,11 @@ private:
     void printGame();
     void printXAxis();
     vector < string > __toString();
+    bool isInteger(const string &s);
+    bool saveGrid(ofstream *writeFile);
+    bool isFound (string fileName);
+    bool loadGrid(ifstream *readFile);
+    bool loadValue(ifstream *readFile);
 
 public:
     Game(int height, int width, int per);
@@ -56,4 +62,6 @@ public:
     int getWidth ();
     int getHeight ();
     void playGame ();
+    bool loadSaveGrid();
+    bool loadSaveGame();
 };
