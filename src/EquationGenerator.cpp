@@ -196,11 +196,11 @@ string EquationGenerator::detOpr (short numberOfNONnull) {
                         return "÷";
                     } else {
                         // bug
-                        return " ";
+                        return "?";
                     }
                 case 1:
                     // bug ...
-                    return " ";
+                    return "?";
                 default:
                     if (*eNumber[0] + *eNumber[1] == *eNumber[2]) {
                         if (*eNumber[0] * *eNumber[1] == *eNumber[2]) {
@@ -212,7 +212,7 @@ string EquationGenerator::detOpr (short numberOfNONnull) {
                         return "×";
                     } else {
                         // bug ...
-                        return " ";
+                        return "?";
                     }
             }
             break;
@@ -413,7 +413,6 @@ void EquationGenerator::setMathEQ (int n) {
                     setMaxNumberLength(cellNewValue.size());
                     nCell->setValue(cellNewValue);
                     nCell->setState(is);
-                    nCell->setV(!is);
                     m_visited[k][m_nodeList->at(n).x] = true;
                     rTime -= is;
                 }
@@ -439,7 +438,6 @@ void EquationGenerator::setMathEQ (int n) {
                     setMaxNumberLength(cellNewValue.size());
                     nCell->setValue(cellNewValue);
                     nCell->setState(is);
-                    nCell->setV(!is);
                     m_visited[m_nodeList->at(n).y][k] = true;
                     rTime -= is;
 
