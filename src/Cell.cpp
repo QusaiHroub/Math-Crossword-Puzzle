@@ -92,7 +92,7 @@ OperatorCell::OperatorCell(string Value) {
 
 string NumericCell::toString () {
     string str;
-    if (m_visible) {
+    if (!getState()) {
         int n = getLength() - getValue().length();
         int m = n / 2;
         str.assign(m, ' ');
@@ -134,12 +134,6 @@ NumericCell::NumericCell (string Value) {
 NumericCell::NumericCell (string Value, bool s) {
     setValue(Value);
     setState(s);
-}
-void NumericCell::setV(bool v) {
-    m_visible = v;
-}
-bool NumericCell::getV() {
-    return m_visible;
 }
 string NumericCell::getGValue () {
     if (!m_state)

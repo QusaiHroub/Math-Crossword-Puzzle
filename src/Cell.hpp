@@ -67,7 +67,6 @@ public:
 
 class NumericCell : public ValuedCell{
 private:
-    bool m_visible = true;
     string m_gValue = "";
 public:
     string toString ();
@@ -78,8 +77,6 @@ public:
     NumericCell ();
     NumericCell (string Value);
     NumericCell (string Value, bool s);
-    void setV(bool v);
-    bool getV();
     string getGValue ();
     void setGValue (string val);
 };
