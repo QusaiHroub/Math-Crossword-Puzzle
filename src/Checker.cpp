@@ -109,7 +109,7 @@ bool Checker::getR (char o, int a, int b, int r) {
                 return false;
             }
             return a / b == r;
-        case ' ':
+        case '?':
             return true;
     }
     return false;
