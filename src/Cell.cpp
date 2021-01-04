@@ -20,6 +20,10 @@
 
 using namespace Cell;
 
+CoreCell::~CoreCell() {
+
+}
+
 int CoreCell::m_lenght = 7;
 
 CoreCell::CoreCell(int len) {

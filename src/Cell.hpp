@@ -30,6 +30,7 @@ private :
     static int m_lenght;
 public:
     virtual string toString() = 0;
+    virtual ~CoreCell();
     void setLength(int newLingth);
     int getLength();
     CoreCell(int len);
